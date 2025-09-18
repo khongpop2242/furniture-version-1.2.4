@@ -1,0 +1,31 @@
+{
+  "name": "furnituree",
+  "version": "1.0.0",
+  "description": "Office Furniture E-commerce Website",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd backend && npm run dev",
+    "client": "cd frontend && npm start",
+    "build": "cd frontend && npm run build",
+    "install-all": "npm install && cd frontend && npm install && cd backend && npm install",
+    "db:setup": "cd backend && npm run db:setup",
+    "db:seed": "cd backend && npm run db:seed-all",
+    "db:reset": "cd backend && npm run db:reset"
+  },
+  "keywords": [
+    "furniture",
+    "e-commerce",
+    "react",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "concurrently": "^8.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "nodemon": "^3.0.1",
+    "stripe": "^18.5.0"
+  }
+}
