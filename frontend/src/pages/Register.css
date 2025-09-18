@@ -1,0 +1,11 @@
+.register-page { display:flex; justify-content:center; padding:40px 0; background:#fff; }
+.register-container { width:100%; max-width:460px; padding:0 16px; }
+.register-container h1 { text-align:center; margin-bottom:18px; }
+.register-form label { display:block; font-weight:700; margin:12px 0 6px; }
+.register-form input { width:100%; padding:12px 14px; border:1px solid #ddd; border-radius:8px; outline:none; }
+.register-form .name-row { display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
+.error { color:#b40000; margin:10px 0; }
+.btn-register { width:100%; padding:12px 16px; background:#b40000; color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer; }
+.terms { margin:10px 0; font-size:14px; }
+.login-note { margin-top:12px; font-size:14px; }
+
