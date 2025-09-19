@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -17,37 +11,37 @@ model User {
   id        Int      @id @default(autoincrement())
   name      String
   email     String   @unique
+  password  String
   phone     String?
   address   String?
   avatar    String?
+  role      UserRole @default(USER)
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  orders Order[]
+  updatedAt DateTime @updatedAt @default(now())
+  orders    Order[]
 
   @@map("users")
 }
 
 model Product {
-  id           Int      @id @default(autoincrement())
-  name         String
-  model        String
-  price        Decimal  @db.Decimal(10, 2)
-  originalPrice Decimal @db.Decimal(10, 2)
-  image        String
-  category     String
-  description  String   @db.Text
-  stock        Int      @default(0)
-  rating       Decimal  @db.Decimal(3, 2) @default(0)
-  reviews      Int      @default(0)
-  isBestSeller Boolean  @default(false)
-  isOnSale     Boolean  @default(false)
-  discount     Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  cartItems CartItem[]
-  orderItems OrderItem[]
+  id            Int         @id @default(autoincrement())
+  name          String
+  model         String
+  price         Decimal     @db.Decimal(10, 2)
+  originalPrice Decimal     @db.Decimal(10, 2)
+  image         String
+  category      String
+  description   String      @db.Text
+  stock         Int         @default(0)
+  rating        Decimal     @default(0.00) @db.Decimal(3, 2)
+  reviews       Int         @default(0)
+  isBestSeller  Boolean     @default(false)
+  isOnSale      Boolean     @default(false)
+  discount      Int         @default(0)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
 
   @@map("products")
 }
@@ -58,9 +52,9 @@ model CartItem {
   quantity  Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
+  @@index([productId], map: "cart_items_productId_fkey")
   @@map("cart_items")
 }
 
@@ -72,10 +66,10 @@ model Order {
   shippingAddress String      @db.Text
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
+  orderItems      OrderItem[]
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  orderItems OrderItem[]
-
+  @@index([userId], map: "orders_userId_fkey")
   @@map("orders")
 }
 
@@ -87,10 +81,11 @@ model OrderItem {
   price     Decimal  @db.Decimal(10, 2)
   quantity  Int
   createdAt DateTime @default(now())
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
+  @@index([orderId], map: "order_items_orderId_fkey")
+  @@index([productId], map: "order_items_productId_fkey")
   @@map("order_items")
 }
 
@@ -125,4 +120,9 @@ enum OrderStatus {
   SHIPPED
   DELIVERED
   CANCELLED
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }

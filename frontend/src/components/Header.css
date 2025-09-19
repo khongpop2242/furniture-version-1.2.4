@@ -138,11 +138,22 @@
   gap: 15px;
 }
 
-.cart-icon, .profile-icon {
+.cart-icon, .profile-icon, .admin-icon {
   position: relative;
   color: #333;
   font-size: 20px;
   text-decoration: none;
+  margin: 0 10px;
+  transition: all 0.3s ease;
+}
+
+.admin-icon {
+  color: #dc3545;
+}
+
+.admin-icon:hover {
+  color: #c82333;
+  transform: scale(1.1);
 }
 
 .cart-badge {

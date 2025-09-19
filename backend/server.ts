@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import mysql from 'mysql2/promise';
 import { dbConfig } from './config/database';
+import { PrismaClient } from '@prisma/client';
 import Stripe from 'stripe';
 import bodyParser from 'body-parser';
 import bcrypt from 'bcryptjs';
@@ -11,6 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY || '';
 const stripe = new Stripe(stripeSecretKey, { apiVersion: '2024-06-20' as any });
+const prisma = new PrismaClient();
 
 // Create MySQL connection pool
 const pool = mysql.createPool({
@@ -54,8 +56,11 @@ app.post('/api/stripe/webhook', async (req: any, res) => {
     switch (event.type) {
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        // TODO: อัปเดตสถานะคำสั่งซื้อใน DB ตาม paymentIntent.metadata.orderId (ถ้ามี)
         console.log('Payment succeeded:', paymentIntent.id);
+        
+        // Clear cart after successful payment
+        await prisma.cartItem.deleteMany();
+        console.log('✅ Cart cleared after successful payment');
         break;
       }
       case 'payment_intent.payment_failed': {
@@ -292,15 +297,31 @@ app.get('/api/categories', async (req, res) => {
 // Cart Routes
 app.get('/api/cart', async (req, res) => {
   try {
-    const [cartItems] = await pool.execute(`
-      SELECT 
-        p.id, p.name, p.model, p.price, p.image,
-        ci.quantity
-      FROM cart_items ci
-      JOIN products p ON ci.productId = p.id
-    `);
+    const cartItems = await prisma.cartItem.findMany({
+      include: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+            model: true,
+            price: true,
+            image: true
+          }
+        }
+      }
+    });
 
-    res.json(cartItems);
+    // Format response to match frontend expectations
+    const formattedCartItems = cartItems.map(item => ({
+      id: item.product.id,
+      name: item.product.name,
+      model: item.product.model,
+      price: parseFloat(item.product.price.toString()),
+      image: item.product.image,
+      quantity: item.quantity
+    }));
+
+    res.json(formattedCartItems);
   } catch (error) {
     console.error('Error fetching cart:', error);
     res.status(500).json({ message: 'เกิดข้อผิดพลาดในการดึงข้อมูลตะกร้าสินค้า' });
@@ -311,50 +332,65 @@ app.post('/api/cart', async (req, res) => {
   try {
     const { productId, quantity = 1 } = req.body;
 
-    // Check if product exists
-    const [products] = await pool.execute(
-      'SELECT * FROM products WHERE id = ?',
-      [productId]
-    );
+    // Check if product exists using Prisma
+    const product = await prisma.product.findUnique({
+      where: { id: productId }
+    });
 
-    if (!products || (products as any[]).length === 0) {
+    if (!product) {
       return res.status(404).json({ message: 'ไม่พบสินค้า' });
     }
 
     // Check if item already exists in cart
-    const [existingItems] = await pool.execute(
-      'SELECT * FROM cart_items WHERE productId = ?',
-      [productId]
-    );
+    const existingItem = await prisma.cartItem.findFirst({
+      where: { productId: productId }
+    });
 
-    if ((existingItems as any[]).length > 0) {
+    if (existingItem) {
       // Update quantity
-      const existingItem = (existingItems as any[])[0];
-      await pool.execute(
-        'UPDATE cart_items SET quantity = ? WHERE id = ?',
-        [existingItem.quantity + quantity, existingItem.id]
-      );
+      await prisma.cartItem.update({
+        where: { id: existingItem.id },
+        data: { quantity: existingItem.quantity + quantity }
+      });
     } else {
       // Add new item
-      await pool.execute(
-        'INSERT INTO cart_items (productId, quantity) VALUES (?, ?)',
-        [productId, quantity]
-      );
+      await prisma.cartItem.create({
+        data: {
+          productId: productId,
+          quantity: quantity
+        }
+      });
     }
 
     // Return updated cart
-    const [cartItems] = await pool.execute(`
-      SELECT 
-        p.id, p.name, p.model, p.price, p.image,
-        ci.quantity
-      FROM cart_items ci
-      JOIN products p ON ci.productId = p.id
-    `);
+    const cartItems = await prisma.cartItem.findMany({
+      include: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+            model: true,
+            price: true,
+            image: true
+          }
+        }
+      }
+    });
 
-    res.json(cartItems);
+    // Format response to match frontend expectations
+    const formattedCartItems = cartItems.map(item => ({
+      id: item.product.id,
+      name: item.product.name,
+      model: item.product.model,
+      price: parseFloat(item.product.price.toString()),
+      image: item.product.image,
+      quantity: item.quantity
+    }));
+
+    res.json(formattedCartItems);
   } catch (error) {
     console.error('Error adding to cart:', error);
-    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการเพิ่มสินค้าลงตะกร้า' });
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการเพิ่มสินค้าลงตะกร้า', error: error.message });
   }
 });
 
@@ -408,29 +444,42 @@ app.delete('/api/cart/:productId', async (req, res) => {
   try {
     const productId = parseInt(req.params.productId);
 
-    const [cartItems] = await pool.execute(
-      'SELECT * FROM cart_items WHERE productId = ?',
-      [productId]
-    );
+    const cartItem = await prisma.cartItem.findFirst({
+      where: { productId: productId }
+    });
 
-    if ((cartItems as any[]).length > 0) {
-      const cartItem = (cartItems as any[])[0];
-      await pool.execute(
-        'DELETE FROM cart_items WHERE id = ?',
-        [cartItem.id]
-      );
+    if (cartItem) {
+      await prisma.cartItem.delete({
+        where: { id: cartItem.id }
+      });
     }
 
     // Return updated cart
-    const [updatedCartItems] = await pool.execute(`
-      SELECT 
-        p.id, p.name, p.model, p.price, p.image,
-        ci.quantity
-      FROM cart_items ci
-      JOIN products p ON ci.productId = p.id
-    `);
+    const cartItems = await prisma.cartItem.findMany({
+      include: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+            model: true,
+            price: true,
+            image: true
+          }
+        }
+      }
+    });
 
-    res.json(updatedCartItems);
+    // Format response to match frontend expectations
+    const formattedCartItems = cartItems.map(item => ({
+      id: item.product.id,
+      name: item.product.name,
+      model: item.product.model,
+      price: parseFloat(item.product.price.toString()),
+      image: item.product.image,
+      quantity: item.quantity
+    }));
+
+    res.json(formattedCartItems);
   } catch (error) {
     console.error('Error removing from cart:', error);
     res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลบสินค้าออกจากตะกร้า' });
@@ -439,11 +488,22 @@ app.delete('/api/cart/:productId', async (req, res) => {
 
 app.delete('/api/cart', async (req, res) => {
   try {
-    await pool.execute('DELETE FROM cart_items');
+    await prisma.cartItem.deleteMany();
     res.json([]);
   } catch (error) {
     console.error('Error clearing cart:', error);
     res.status(500).json({ message: 'เกิดข้อผิดพลาดในการล้างตะกร้าสินค้า' });
+  }
+});
+
+// Clear all cart items (alias for /api/cart)
+app.delete('/api/cart/clear', async (req, res) => {
+  try {
+    await prisma.cartItem.deleteMany();
+    res.json({ message: 'ลบสินค้าออกจากตะกร้าเรียบร้อยแล้ว' });
+  } catch (error) {
+    console.error('Error clearing cart:', error);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลบสินค้าออกจากตะกร้า' });
   }
 });
 
@@ -530,39 +590,36 @@ app.post('/api/orders', async (req, res) => {
       sum + (parseFloat(item.price) * item.quantity), 0
     );
 
-    const [users] = await pool.execute('SELECT * FROM users LIMIT 1');
-    if (!users || (users as any[]).length === 0) {
+    // Get first user (for demo purposes)
+    const user = await prisma.user.findFirst();
+    if (!user) {
       return res.status(400).json({ message: 'ไม่พบข้อมูลผู้ใช้' });
     }
 
-    const user = (users as any[])[0];
+    // Create order with order items
+    const order = await prisma.order.create({
+      data: {
+        userId: user.id,
+        total: total,
+        shippingAddress: shippingAddress,
+        orderItems: {
+          create: items.map((item: any) => ({
+            productId: item.id,
+            name: item.name,
+            price: parseFloat(item.price),
+            quantity: item.quantity
+          }))
+        }
+      },
+      include: {
+        orderItems: true
+      }
+    });
 
-    // Create order
-    const [orderResult] = await pool.execute(
-      'INSERT INTO orders (userId, total, shippingAddress) VALUES (?, ?, ?)',
-      [user.id, total, shippingAddress]
-    );
+    // Clear cart after successful order creation
+    await prisma.cartItem.deleteMany();
 
-    const orderId = (orderResult as any).insertId;
-
-    // Create order items
-    for (const item of items) {
-      await pool.execute(
-        'INSERT INTO order_items (orderId, productId, name, price, quantity) VALUES (?, ?, ?, ?, ?)',
-        [orderId, item.productId, item.name, item.price, item.quantity]
-      );
-    }
-
-    // Clear cart
-    await pool.execute('DELETE FROM cart_items');
-
-    // Get created order
-    const [newOrders] = await pool.execute(
-      'SELECT * FROM orders WHERE id = ?',
-      [orderId]
-    );
-
-    res.json((newOrders as any[])[0]);
+    res.json(order);
   } catch (error) {
     console.error('Error creating order:', error);
     res.status(500).json({ message: 'เกิดข้อผิดพลาดในการสร้างคำสั่งซื้อ' });
@@ -679,23 +736,53 @@ const authMiddleware = (req: any, res: any, next: any) => {
   }
 };
 
+// Admin middleware - ตรวจสอบสิทธิ์ admin
+const adminMiddleware = async (req: any, res: any, next: any) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: { role: true }
+    });
+    
+    if (!user || user.role !== 'ADMIN') {
+      return res.status(403).json({ message: 'ไม่มีสิทธิ์เข้าถึง - ต้องเป็น Admin เท่านั้น' });
+    }
+    
+    next();
+  } catch (error) {
+    console.error('Admin middleware error:', error);
+    return res.status(500).json({ message: 'เกิดข้อผิดพลาดในการตรวจสอบสิทธิ์' });
+  }
+};
+
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { name, email, password } = req.body || {};
     if (!name || !email || !password) return res.status(400).json({ message: 'กรอกข้อมูลให้ครบ' });
 
-    const [dup]: any = await pool.execute('SELECT id FROM users WHERE email = ?', [email]);
-    if ((dup as any[]).length) return res.status(409).json({ message: 'อีเมลนี้มีผู้ใช้แล้ว' });
+    // ตรวจสอบอีเมลซ้ำ
+    const existingUser = await prisma.user.findUnique({
+      where: { email }
+    });
+    if (existingUser) return res.status(409).json({ message: 'อีเมลนี้มีผู้ใช้แล้ว' });
 
+    // เข้ารหัสรหัสผ่าน
     const hash = await bcrypt.hash(password, 10);
-    const [r]: any = await pool.execute(
-      'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
-      [name, email, hash]
-    );
-    const token = signToken({ id: r.insertId, email });
-    res.json({ token, user: { id: r.insertId, name, email } });
+    
+    // เพิ่มผู้ใช้ใหม่
+    const newUser = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hash
+      }
+    });
+    
+    const token = signToken({ id: newUser.id, email });
+    res.json({ token, user: { id: newUser.id, name, email } });
   } catch (e) {
-    res.status(500).json({ message: 'เกิดข้อผิดพลาด' });
+    console.error('Register error:', e);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาด', error: e.message });
   }
 });
 
@@ -720,13 +807,59 @@ app.post('/api/auth/login', async (req, res) => {
 
 app.get('/api/auth/me', authMiddleware, async (req: any, res) => {
   try {
-    const [rows]: any = await pool.execute(
-      'SELECT id, name, email, phone, address, avatar FROM users WHERE id = ? LIMIT 1',
-      [req.user.id]
-    );
-    res.json((rows as any[])[0] || null);
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: { id: true, name: true, email: true, phone: true, address: true, avatar: true, role: true }
+    });
+    res.json(user);
   } catch (e) {
     res.status(500).json({ message: 'เกิดข้อผิดพลาด' });
+  }
+});
+
+// Admin API - Get all users
+app.get('/api/admin/users', authMiddleware, adminMiddleware, async (req: any, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        address: true,
+        avatar: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json(users);
+  } catch (e) {
+    console.error('Error fetching users:', e);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้' });
+  }
+});
+
+// Admin API - Update user role
+app.put('/api/admin/users/:id/role', authMiddleware, adminMiddleware, async (req: any, res) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.body;
+    
+    if (!role || !['USER', 'ADMIN'].includes(role)) {
+      return res.status(400).json({ message: 'Role ไม่ถูกต้อง' });
+    }
+    
+    const updatedUser = await prisma.user.update({
+      where: { id: parseInt(id) },
+      data: { role }
+    });
+    
+    res.json({ message: 'อัปเดตสิทธิ์ผู้ใช้สำเร็จ', user: updatedUser });
+  } catch (e) {
+    console.error('Error updating user role:', e);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการอัปเดตสิทธิ์' });
   }
 });
 

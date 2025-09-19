@@ -19,6 +19,14 @@ const CheckoutSuccess = () => {
         if (!sessionId) return;
         const { data } = await axios.get(`http://localhost:5000/api/checkout/session/${sessionId}`);
         setData(data);
+        
+        // Clear cart after successful checkout
+        try {
+          await axios.delete('http://localhost:5000/api/cart/clear');
+          console.log('✅ Cart cleared after successful checkout');
+        } catch (cartError) {
+          console.error('Error clearing cart:', cartError);
+        }
       } catch (e) {
         // ignore
       } finally {

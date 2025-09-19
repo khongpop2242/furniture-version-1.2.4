@@ -7,6 +7,7 @@ const Header = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggest, setShowSuggest] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [userRole, setUserRole] = useState('');
   const debounceRef = useRef(null);
   const navigate = useNavigate();
 
@@ -69,6 +70,28 @@ const Header = () => {
     };
   }, []);
 
+  // ตรวจสอบ role ของ user
+  useEffect(() => {
+    const checkUserRole = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      
+      try {
+        const response = await fetch('http://localhost:5000/api/auth/me', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const user = await response.json();
+          setUserRole(user.role);
+        }
+      } catch (error) {
+        console.error('Error checking user role:', error);
+      }
+    };
+    
+    checkUserRole();
+  }, []);
+
   return (
     <header className="header">
       <div className="header-top">
@@ -115,6 +138,11 @@ const Header = () => {
                 <i className="fas fa-shopping-cart"></i>
                 {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
               </Link>
+              {userRole === 'ADMIN' && (
+                <Link to="/admin" className="admin-icon" title="แดชบอร์ดผู้ดูแลระบบ">
+                  <i className="fas fa-user-shield"></i>
+                </Link>
+              )}
               <Link to="/profile" className="profile-icon">
                 <i className="fas fa-user"></i>
               </Link>
