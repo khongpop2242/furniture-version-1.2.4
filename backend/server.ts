@@ -388,7 +388,7 @@ app.post('/api/cart', async (req, res) => {
     }));
 
     res.json(formattedCartItems);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error adding to cart:', error);
     res.status(500).json({ message: 'เกิดข้อผิดพลาดในการเพิ่มสินค้าลงตะกร้า', error: error.message });
   }
@@ -780,7 +780,7 @@ app.post('/api/auth/register', async (req, res) => {
     
     const token = signToken({ id: newUser.id, email });
     res.json({ token, user: { id: newUser.id, name, email } });
-  } catch (e) {
+  } catch (e: any) {
     console.error('Register error:', e);
     res.status(500).json({ message: 'เกิดข้อผิดพลาด', error: e.message });
   }

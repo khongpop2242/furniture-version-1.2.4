@@ -18,8 +18,8 @@
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
 }
 
 .product-card {
@@ -113,9 +113,232 @@
   cursor: not-allowed;
 }
 
+/* Filter and Sort Styles */
+.filter-sort-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #e9ecef;
+}
+
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.filter-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+.filter-icon svg {
+  color: #dc3545;
+}
+
+.category-filters {
+  display: flex;
+  gap: 15px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+
+.category-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 2px solid #ddd;
+  border-radius: 25px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.category-option:hover {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.category-option.selected {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: white;
+}
+
+.category-option input[type="radio"] {
+  display: none;
+}
+
+/* Custom scrollbar for category filters */
+.category-filters::-webkit-scrollbar {
+  height: 6px;
+}
+
+.category-filters::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.category-filters::-webkit-scrollbar-thumb {
+  background: #dc3545;
+  border-radius: 3px;
+}
+
+.category-filters::-webkit-scrollbar-thumb:hover {
+  background: #c82333;
+}
+
+.sort-section {
+  display: flex;
+  align-items: center;
+}
+
+.sort-dropdown {
+  padding: 8px 16px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+.sort-dropdown:hover {
+  border-color: #dc3545;
+}
+
+.sort-dropdown:focus {
+  outline: none;
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+/* Pagination Styles */
+.pagination {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.pagination-info {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  padding: 8px 16px;
+  border: 2px solid #ddd;
+  background: white;
+  color: #333;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-width: 40px;
+  text-align: center;
+}
+
+.pagination-btn:hover {
+  border-color: #dc3545;
+  color: #dc3545;
+  transform: translateY(-2px);
+}
+
+.pagination-btn.active {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: white;
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.pagination-btn.active:hover {
+  background: #c82333;
+  border-color: #c82333;
+  transform: translateY(-2px);
+}
+
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   .products-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .filter-sort-container {
+    flex-direction: column;
+    gap: 20px;
+    align-items: stretch;
+  }
+  
+  .filter-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+  
+  .category-filters {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+  
+  .sort-section {
+    justify-content: center;
+  }
+  
+  .sort-dropdown {
+    min-width: 100%;
+  }
+  
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .pagination {
+    margin-top: 30px;
+  }
+  
+  .pagination-controls {
+    gap: 6px;
+  }
+  
+  .pagination-btn {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    min-width: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
   }
 } 
