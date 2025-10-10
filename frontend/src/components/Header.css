@@ -147,6 +147,28 @@
   transition: all 0.3s ease;
 }
 
+.auth-links {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.login-link {
+  color: #333;
+  text-decoration: none;
+  font-size: 20px;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-link:hover {
+  color: #dc3545;
+}
+
 .admin-icon {
   color: #dc3545;
 }

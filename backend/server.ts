@@ -791,16 +791,19 @@ app.post('/api/auth/login', async (req, res) => {
     const { email, password } = req.body || {};
     if (!email || !password) return res.status(400).json({ message: 'กรอกอีเมลและรหัสผ่าน' });
 
-    const [rows]: any = await pool.execute('SELECT * FROM users WHERE email = ? LIMIT 1', [email]);
-    const u = (rows as any[])[0];
-    if (!u || !u.password) return res.status(401).json({ message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
+    const user = await prisma.user.findUnique({
+      where: { email }
+    });
+    
+    if (!user || !user.password) return res.status(401).json({ message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
 
-    const ok = await bcrypt.compare(password, u.password);
+    const ok = await bcrypt.compare(password, user.password);
     if (!ok) return res.status(401).json({ message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
 
-    const token = signToken({ id: u.id, email: u.email });
-    res.json({ token, user: { id: u.id, name: u.name, email: u.email } });
+    const token = signToken({ id: user.id, email: user.email });
+    res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
   } catch (e) {
+    console.error('Login error:', e);
     res.status(500).json({ message: 'เกิดข้อผิดพลาด' });
   }
 });
@@ -813,6 +816,97 @@ app.get('/api/auth/me', authMiddleware, async (req: any, res) => {
     });
     res.json(user);
   } catch (e) {
+    res.status(500).json({ message: 'เกิดข้อผิดพลาด' });
+  }
+});
+
+// Forgot Password - Request reset
+app.post('/api/auth/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: 'กรุณากรอกอีเมล' });
+
+    const user = await prisma.user.findUnique({
+      where: { email }
+    });
+
+    if (!user) {
+      // Don't reveal if email exists or not for security
+      return res.json({ message: 'หากอีเมลนี้มีอยู่ในระบบ เราจะส่งลิงก์รีเซ็ตรหัสผ่านให้' });
+    }
+
+    // Generate reset token
+    const resetToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    const resetExpires = new Date(Date.now() + 3600000); // 1 hour
+
+    // Save reset token to database
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        resetPasswordToken: resetToken,
+        resetPasswordExpires: resetExpires
+      }
+    });
+
+    // Create reset URL
+    const resetUrl = `${req.headers.origin || 'http://localhost:3000'}/reset-password?token=${resetToken}`;
+
+    // Log email content (for development)
+    console.log('\n📧 EMAIL WOULD BE SENT:');
+    console.log('To:', email);
+    console.log('Subject: รีเซ็ตรหัสผ่าน - Furniture KaoKai');
+    console.log('Reset URL:', resetUrl);
+    console.log('📧 END EMAIL\n');
+
+    res.json({ message: 'หากอีเมลนี้มีอยู่ในระบบ เราจะส่งลิงก์รีเซ็ตรหัสผ่านให้' });
+  } catch (e: any) {
+    console.error('Forgot password error:', e);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาด' });
+  }
+});
+
+// Reset Password - Verify token and reset password
+app.post('/api/auth/reset-password', async (req, res) => {
+  try {
+    const { token, password } = req.body;
+    if (!token || !password) {
+      return res.status(400).json({ message: 'กรุณากรอกข้อมูลให้ครบ' });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({ message: 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร' });
+    }
+
+    // Find user with valid reset token
+    const user = await prisma.user.findFirst({
+      where: {
+        resetPasswordToken: token,
+        resetPasswordExpires: {
+          gt: new Date()
+        }
+      }
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'ลิงก์รีเซ็ตรหัสผ่านไม่ถูกต้องหรือหมดอายุแล้ว' });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Update password and clear reset token
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetPasswordToken: null,
+        resetPasswordExpires: null
+      }
+    });
+
+    res.json({ message: 'รีเซ็ตรหัสผ่านสำเร็จ' });
+  } catch (e: any) {
+    console.error('Reset password error:', e);
     res.status(500).json({ message: 'เกิดข้อผิดพลาด' });
   }
 });

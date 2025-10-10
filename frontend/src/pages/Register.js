@@ -45,19 +45,17 @@ export default function Register() {
   return (
     <div className="register-page">
       <div className="register-container">
-        <h1>เข้าสู่ระบบ</h1>
+        <h1>สมัครสมาชิก</h1>
         <form onSubmit={onSubmit} className="register-form">
-          <label>อีเมล์ผู้ใช้งาน</label>
-          <input type="email" placeholder="อีเมล์ผู้ใช้งาน" value={email} onChange={(e)=>setEmail(e.target.value)} required />
           <label>ชื่อ - นามสกุล</label>
           <div className="name-row">
             <input type="text" placeholder="ชื่อ" value={firstName} onChange={(e)=>setFirstName(e.target.value)} required />
             <input type="text" placeholder="นามสกุล" value={lastName} onChange={(e)=>setLastName(e.target.value)} required />
           </div>
-          <label>เบอร์มือถือ</label>
-          <input type="tel" placeholder="หมายเลขโทรศัพท์" value={phone} onChange={(e)=>setPhone(e.target.value)} />
           <label>อีเมล์ผู้ใช้งาน</label>
           <input type="email" placeholder="อีเมล์ผู้ใช้งาน" value={email} onChange={(e)=>setEmail(e.target.value)} required />
+          <label>เบอร์มือถือ</label>
+          <input type="tel" placeholder="หมายเลขโทรศัพท์" value={phone} onChange={(e)=>setPhone(e.target.value)} />
           <label>รหัสผ่าน</label>
           <input type="password" placeholder="อย่างน้อย 8 ตัวอักษร" value={password} onChange={(e)=>setPassword(e.target.value)} required />
           <label>ยืนยันรหัสผ่าน</label>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Products.css';
 
@@ -12,6 +13,12 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [sortBy, setSortBy] = useState('recommended');
   const itemsPerPage = 16;
+
+  // ฟังก์ชันสำหรับดึงรูปภาพจากโฟลเดอร์ local
+  const getProductImage = (productId) => {
+    const imageNumber = ((productId - 1) % 4) + 1;
+    return `/images/products/product${imageNumber}.jpg`;
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -179,14 +186,24 @@ const Products = () => {
         <div className="products-grid">
           {currentProducts.map((product) => (
             <div key={product.id} className="product-card">
-              <div className="product-image">
-                <img src={product.image || '/images/placeholder-product.svg'} alt={product.name} />
-              </div>
-              <div className="product-info">
-                <h3>{product.name}</h3>
-                <p className="product-model">รุ่น: {product.model}</p>
-                <p className="product-category">{product.category}</p>
-                <p className="product-price">{product.price.toLocaleString()} บาท</p>
+              <Link to={`/product/${product.id}`} className="product-link">
+                <div className="product-image">
+                  <img 
+                    src={getProductImage(product.id)} 
+                    alt={product.name}
+                    onError={(e) => {
+                      e.target.src = '/images/NoImage.png';
+                    }}
+                  />
+                </div>
+                <div className="product-info">
+                  <h3>{product.name}</h3>
+                  <p className="product-model">รุ่น: {product.model}</p>
+                  <p className="product-category">{product.category}</p>
+                  <p className="product-price">{product.price.toLocaleString()} บาท</p>
+                </div>
+              </Link>
+              <div className="product-actions">
                 <button 
                   className="btn btn-primary"
                   onClick={() => addToCart(product.id, product.name)}

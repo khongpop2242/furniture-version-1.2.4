@@ -143,9 +143,17 @@ const Header = () => {
                   <i className="fas fa-user-shield"></i>
                 </Link>
               )}
-              <Link to="/profile" className="profile-icon">
-                <i className="fas fa-user"></i>
-              </Link>
+              {localStorage.getItem('token') ? (
+                <Link to="/profile" className="profile-icon">
+                  <i className="fas fa-user"></i>
+                </Link>
+              ) : (
+                <div className="auth-links">
+                  <Link to="/login" className="login-link">
+                    <i className="fas fa-user"></i>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>

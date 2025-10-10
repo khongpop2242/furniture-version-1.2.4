@@ -43,7 +43,7 @@ export default function Login() {
             <label>รหัสผ่าน</label>
             <input type="password" placeholder="ระบุรหัสผ่าน ( อย่างน้อย8ตัวอักษร )" value={password} onChange={(e)=>setPassword(e.target.value)} required />
             <div className="login-utils">
-              <button type="button" onClick={()=>alert('ยังไม่เปิดใช้ฟีเจอร์ลืมรหัสผ่าน')}>ลืมรหัสผ่าน?</button>
+              <a href="/forgot-password" style={{color: '#667eea', textDecoration: 'none', fontSize: '14px'}}>ลืมรหัสผ่าน?</a>
             </div>
             {error && <div className="error">{error}</div>}
             <button className="btn-login" type="submit" disabled={loading}>

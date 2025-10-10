@@ -312,6 +312,16 @@ const Cart = () => {
   };
 
   const handlePromptPayCheckout = async () => {
+    // ตรวจสอบการล็อกอินก่อนดำเนินการจ่ายเงิน
+    const token = localStorage.getItem('token');
+    if (!token) {
+      const confirmLogin = window.confirm('กรุณาเข้าสู่ระบบก่อนดำเนินการจ่ายเงิน\nต้องการไปหน้าเข้าสู่ระบบหรือไม่?');
+      if (confirmLogin) {
+        window.location.href = '/login';
+      }
+      return;
+    }
+
     try {
       if (cartItems.length === 0) return;
       setCreatingPayment(true);
@@ -430,7 +440,18 @@ const Cart = () => {
               <span>{calculateTotal().toLocaleString()} บาท</span>
             </div>
             <div className="cart-actions">
-              <button className="btn btn-primary checkout-btn" onClick={handlePromptPayCheckout} disabled={creatingPayment}>
+              {!localStorage.getItem('token') && (
+                <div className="login-required-notice">
+                  <i className="fas fa-exclamation-triangle"></i>
+                  <span>กรุณาเข้าสู่ระบบก่อนดำเนินการจ่ายเงิน</span>
+                </div>
+              )}
+              <button 
+                className={`btn btn-primary checkout-btn ${!localStorage.getItem('token') ? 'disabled' : ''}`} 
+                onClick={handlePromptPayCheckout} 
+                disabled={creatingPayment}
+                title={!localStorage.getItem('token') ? 'กรุณาเข้าสู่ระบบก่อน' : ''}
+              >
                 {creatingPayment ? 'กำลังสร้างการชำระเงิน...' : 'ชำระเงินด้วย PromptPay'}
               </button>
               <button 

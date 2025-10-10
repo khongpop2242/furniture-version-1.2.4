@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Home.css';
@@ -35,9 +35,9 @@ const Home = () => {
     }
   ];
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-  };
+  }, [heroSlides.length]);
 
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
@@ -46,7 +46,7 @@ const Home = () => {
   useEffect(() => {
     const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [nextSlide]);
 
   return (
     <div className="home">
@@ -101,13 +101,17 @@ const Home = () => {
           <div className="products-grid">
             {bestSellers.map((product) => (
               <div key={product.id} className="product-card">
-                <div className="product-image">
-                  <img src={product.image} alt={product.name} />
-                </div>
-                <div className="product-info">
-                  <h3>{product.name}</h3>
-                  <p className="product-model">รุ่น: {product.model}</p>
-                  <p className="product-price">{product.price.toLocaleString()} บาท</p>
+                <Link to={`/product/${product.id}`} className="product-link">
+                  <div className="product-image">
+                    <img src={product.image} alt={product.name} />
+                  </div>
+                  <div className="product-info">
+                    <h3>{product.name}</h3>
+                    <p className="product-model">รุ่น: {product.model}</p>
+                    <p className="product-price">{product.price.toLocaleString()} บาท</p>
+                  </div>
+                </Link>
+                <div className="product-actions">
                   <button className="btn btn-primary">เพิ่มลงตะกร้า</button>
                 </div>
               </div>
