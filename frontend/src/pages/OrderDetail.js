@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import { getApiUrl } from '../config/api';
 import './OrderDetail.css';
 
 const OrderDetail = () => {
@@ -32,10 +33,10 @@ const OrderDetail = () => {
       if (!token) { navigate('/login'); return; }
 
       const [orderRes, meRes] = await Promise.all([
-        axios.get(`http://localhost:5050/api/orders/${orderId}`, {
+        axios.get(getApiUrl(`api/orders/${orderId}`), {
           headers: { Authorization: `Bearer ${token}` }, timeout: 10000
         }),
-        axios.get(`http://localhost:5050/api/auth/me`, {
+        axios.get(getApiUrl('api/auth/me'), {
           headers: { Authorization: `Bearer ${token}` }, timeout: 10000
         })
       ]);

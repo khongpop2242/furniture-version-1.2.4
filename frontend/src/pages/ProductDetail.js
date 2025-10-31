@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { getApiUrl } from '../config/api';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -38,7 +39,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:5050/api/products/${id}`);
+        const response = await axios.get(getApiUrl(`api/products/${id}`));
         setProduct(response.data);
       } catch (err) {
         setError('ไม่พบสินค้า');
@@ -52,7 +53,7 @@ const ProductDetail = () => {
       try {
         const token = localStorage.getItem('token');
         if (token) {
-          const response = await axios.get(`http://localhost:5050/api/favorites/${id}`, {
+          const response = await axios.get(getApiUrl(`api/favorites/${id}`), {
             headers: { Authorization: `Bearer ${token}` }
           });
           setIsFavorite(response.data.isFavorite);
@@ -93,7 +94,7 @@ const ProductDetail = () => {
 
     setAddingToCart(true);
     try {
-      await axios.post('http://localhost:5050/api/cart', {
+      await axios.post(getApiUrl('api/cart'), {
         productId: product.id,
         quantity: quantity
       }, {
@@ -130,14 +131,14 @@ const ProductDetail = () => {
     try {
       if (isFavorite) {
         // ลบออกจาก favorites
-        await axios.delete(`http://localhost:5050/api/favorites/${id}`, {
+        await axios.delete(getApiUrl(`api/favorites/${id}`), {
           headers: { Authorization: `Bearer ${token}` }
         });
         setIsFavorite(false);
         setNotificationMessage(`ลบ "${product.name}" ออกจากรายการโปรดแล้ว`);
       } else {
         // เพิ่มเข้า favorites
-        await axios.post('http://localhost:5050/api/favorites', {
+        await axios.post(getApiUrl('api/favorites'), {
           productId: id
         }, {
           headers: { Authorization: `Bearer ${token}` }

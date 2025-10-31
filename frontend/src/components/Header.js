@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { getApiUrl } from '../config/api';
 import './Header.css';
 
 const Header = () => {
@@ -21,7 +22,7 @@ const Header = () => {
       return;
     }
 
-    fetch('http://localhost:5050/api/cart', {
+    fetch(getApiUrl('api/cart'), {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -70,7 +71,7 @@ const Header = () => {
     }
     debounceRef.current = setTimeout(async () => {
       try {
-        const res = await fetch(`http://localhost:5050/api/search?q=${encodeURIComponent(searchQuery)}`);
+        const res = await fetch(getApiUrl(`api/search?q=${encodeURIComponent(searchQuery)}`));
         const data = await res.json();
         setSuggestions(Array.isArray(data) ? data : []);
         setShowSuggest(true);
@@ -115,7 +116,7 @@ const Header = () => {
       if (!token) return;
 
       try {
-        const response = await fetch('http://localhost:5050/api/auth/me', {
+        const response = await fetch(getApiUrl('api/auth/me'), {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.ok) {
@@ -146,17 +147,17 @@ const Header = () => {
 
             <div className="search-bar" onBlur={() => setTimeout(() => setShowSuggest(false), 150)}>
               <form onSubmit={handleSearch} autoComplete="off">
-                <input
-                  type="text"
-                  placeholder="ค้นหา ..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => suggestions.length && setShowSuggest(true)}
-                />
-                <button type="submit">
-                  <i className="fas fa-search"></i>
-                </button>
-              </form>
+  <input
+    type="text"
+    placeholder="ค้นหา ..."
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+    onFocus={() => suggestions.length && setShowSuggest(true)}
+  />
+  <button type="submit" aria-label="ค้นหา">
+    <img src="/search.png" alt="" className="search-icon-img" />
+  </button>
+</form>
               {showSuggest && suggestions.length > 0 && (
                 <ul className="search-suggestions">
                   {suggestions.map((s) => (

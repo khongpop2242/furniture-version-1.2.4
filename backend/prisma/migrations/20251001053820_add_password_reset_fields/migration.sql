@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `users` ADD COLUMN `resetPasswordExpires` DATETIME(3) NULL,
+    ADD COLUMN `resetPasswordToken` VARCHAR(191) NULL,
+    ADD COLUMN `role` ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER',
+    MODIFY `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);

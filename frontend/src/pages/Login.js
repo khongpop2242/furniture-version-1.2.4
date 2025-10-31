@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import API_URL, { getApiUrl } from '../config/api';
 import axios from 'axios';
 import './Login.css';
 
@@ -13,7 +14,7 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5050/api/auth/login', { email, password });
+      const res = await axios.post(getApiUrl('api/auth/login'), { email, password });
       localStorage.setItem('token', res.data.token);
       window.location.href = '/profile';
     } catch (err) {

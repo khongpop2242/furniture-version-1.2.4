@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getApiUrl } from '../config/api';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -34,7 +35,7 @@ const AdminDashboard = () => {
   const checkUserRole = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5050/api/auth/me', {
+      const response = await axios.get(getApiUrl('api/auth/me'), {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -58,7 +59,7 @@ const AdminDashboard = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5050/api/admin/users', {
+      const response = await axios.get(getApiUrl('api/admin/users'), {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(response.data);
@@ -77,7 +78,7 @@ const AdminDashboard = () => {
   const updateUserRole = async (userId, newRole) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:5050/api/admin/users/${userId}/role`, 
+      await axios.put(getApiUrl(`api/admin/users/${userId}/role`), 
         { role: newRole },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -98,7 +99,7 @@ const AdminDashboard = () => {
   const fetchProducts = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5050/api/admin/products', {
+      const response = await axios.get(getApiUrl('api/admin/products'), {
         headers: { Authorization: `Bearer ${token}` }
       });
       setProducts(response.data);
@@ -112,8 +113,8 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem('token');
       const url = editingProduct 
-        ? `http://localhost:5050/api/admin/products/${editingProduct.id}`
-        : 'http://localhost:5050/api/admin/products';
+        ? getApiUrl(`api/admin/products/${editingProduct.id}`)
+        : getApiUrl('api/admin/products');
       
       const method = editingProduct ? 'PUT' : 'POST';
       
@@ -139,7 +140,7 @@ const AdminDashboard = () => {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5050/api/admin/products/${productId}`, {
+      await axios.delete(getApiUrl(`api/admin/products/${productId}`), {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -154,7 +155,7 @@ const AdminDashboard = () => {
   const updateProductStock = async (productId, action, quantity) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:5050/api/admin/products/${productId}/stock`, 
+      await axios.put(getApiUrl(`api/admin/products/${productId}/stock`), 
         { action, quantity },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -171,7 +172,7 @@ const AdminDashboard = () => {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5050/api/admin/orders', {
+      const response = await axios.get(getApiUrl('api/admin/orders'), {
         headers: { Authorization: `Bearer ${token}` }
       });
       setOrders(response.data);
@@ -184,7 +185,7 @@ const AdminDashboard = () => {
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:5050/api/admin/orders/${orderId}/status`, 
+      await axios.put(getApiUrl(`api/admin/orders/${orderId}/status`), 
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -203,7 +204,7 @@ const AdminDashboard = () => {
   const viewOrderDetails = async (order) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:5050/api/admin/orders/${order.id}`, {
+      const response = await axios.get(getApiUrl(`api/admin/orders/${order.id}`), {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSelectedOrder(response.data);

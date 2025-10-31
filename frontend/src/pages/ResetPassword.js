@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getApiUrl } from '../config/api';
 import './ResetPassword.css';
 
 export default function ResetPassword() {
@@ -39,7 +40,7 @@ export default function ResetPassword() {
     setLoading(true);
     
     try {
-      const res = await axios.post('http://localhost:5050/api/auth/reset-password', { 
+      const res = await axios.post(getApiUrl('api/auth/reset-password'), { 
         token, 
         password 
       });

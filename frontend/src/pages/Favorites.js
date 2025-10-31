@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { getApiUrl } from '../config/api';
 import './Favorites.css';
 
 const Favorites = () => {
@@ -23,7 +24,7 @@ const Favorites = () => {
         return;
       }
 
-      const response = await axios.get('http://localhost:5050/api/favorites', {
+      const response = await axios.get(getApiUrl('api/favorites'), {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -43,7 +44,7 @@ const Favorites = () => {
   const removeFavorite = async (productId) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5050/api/favorites/${productId}`, {
+      await axios.delete(getApiUrl(`api/favorites/${productId}`), {
         headers: { Authorization: `Bearer ${token}` }
       });
 

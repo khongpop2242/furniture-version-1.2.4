@@ -321,3 +321,22 @@
 .header-top{ position: sticky; top: 0; z-index: 30; background:#fff; }
 
 
+/* ไม่ใช้ฟอนต์ไอคอนตัวนี้แล้ว */
+/* .search-bar .fas.fa-search{ font-size:20px; color:#000000; font-weight:100; } */
+
+/* ใช้รูปภาพแทน */
+.search-icon-img{
+  width: 20px;
+  height: 20px;
+  display: block;
+  object-fit: contain;
+}
+
+/* ปรับปุ่มให้รองรับรูปภาพ (เดิมใช้ได้อยู่แล้ว) */
+.search-bar button{
+  position:absolute; right:12px; top:50%; transform:translateY(-50%);
+  background:transparent; border:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:opacity .15s ease;
+}
+.search-bar button:hover{ opacity:.7; }

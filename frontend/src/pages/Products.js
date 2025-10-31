@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
+import API_URL from '../config/api';
 import axios from 'axios';
 import './Products.css';
 
 const Products = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,6 +13,7 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [sortBy, setSortBy] = useState('recommended');
   const itemsPerPage = 16;
+  const searchQuery = searchParams.get('search') || '';
 
   // ฟังก์ชันสำหรับดึงรูปภาพจากโฟลเดอร์ public/images/products
   const getProductImage = (product) => {
@@ -24,7 +27,7 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:5050/api/products');
+        const response = await axios.get(getApiUrl('api/products'));
         setProducts(response.data);
         setFilteredProducts(response.data);
       } catch (error) {
@@ -40,6 +43,13 @@ const Products = () => {
   // Filter and sort products
   useEffect(() => {
     let filtered = [...products];
+
+    // Filter by search query (กรองตามชื่อสินค้า)
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(product => 
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
 
     // Filter by category
     if (selectedCategory) {
@@ -67,7 +77,7 @@ const Products = () => {
 
     setFilteredProducts(filtered);
     setCurrentPage(1); // Reset to first page when filter changes
-  }, [products, selectedCategory, sortBy]);
+  }, [products, selectedCategory, sortBy, searchQuery]);
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);

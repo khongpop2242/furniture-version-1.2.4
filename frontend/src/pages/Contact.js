@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { getApiUrl } from '../config/api';
 import './Contact.css';
 
 export default function Contact() {
@@ -13,7 +14,7 @@ export default function Contact() {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5050/api/contact', form);
+      const res = await axios.post(getApiUrl('api/contact'), form);
       if (res.data?.success) {
         alert('ส่งข้อความเรียบร้อยแล้ว');
         setForm({ name: '', email: '', phone: '', subject: '', message: '' });
@@ -35,10 +36,9 @@ export default function Contact() {
 
           <div className="company-text">
             <p><strong>บริษัท ก้าวไกลเฟอร์นิเจอร์ จำกัด</strong></p>
-            <p>ข้อมูลแนะนำบริษัท</p>
-            <p>บรรทัด 1</p>
-            <p>บรรทัด 2</p>
-            <p>บรรทัด 3</p>
+            <p>เป็นผู้จัดจำหน่ายและผลิตเฟอร์นิเจอร์สำนักงานคุณภาพสูงครบวงจร</p>
+            <p>มุ่งเน้นดีไซน์ทันสมัยและฟังก์ชันการใช้งานที่ตอบโจทย์ทุกธุรกิจ</p>
+            <p>เราพร้อมให้บริการออกแบบ ติดตั้ง และจัดส่งทั่วประเทศด้วยทีมงานมืออาชีพ</p>
           </div>
 
           <h3 className="contactinfo-title">Contact info</h3>

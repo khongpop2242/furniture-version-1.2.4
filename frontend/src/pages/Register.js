@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { getApiUrl } from '../config/api';
 import './Register.css';
 
 export default function Register() {
@@ -34,7 +35,7 @@ export default function Register() {
     setLoading(true);
     try {
       const name = `${firstName} ${lastName}`.trim();
-      const res  = await axios.post('http://localhost:5050/api/auth/register', {
+      const res  = await axios.post(getApiUrl('api/auth/register'), {
         name, email, password, phone
       });
       localStorage.setItem('token', res.data.token);

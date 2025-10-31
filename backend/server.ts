@@ -92,7 +92,17 @@ const sendPasswordResetEmail = async (toEmail: string, userName: string, resetUr
 // MySQL pool is no longer needed - using Prisma instead
 
 // Middleware
-app.use(cors());
+// CORS configuration - allow frontend origin
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'https://kaokai-frontend.onrender.com',
+    'https://kaokai-frontend.vercel.app'
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 // ต้องใช้ raw body สำหรับ webhook เท่านั้น ส่วนอื่นใช้ JSON
 app.use(express.json());
 // Stripe webhook ต้องใช้ raw body ที่ content-type: application/json
@@ -1427,22 +1437,41 @@ app.post('/api/auth/register', async (req, res) => {
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body || {};
-    if (!email || !password) return res.status(400).json({ message: 'กรอกอีเมลและรหัสผ่าน' });
+    if (!email || !password) {
+      return res.status(400).json({ message: 'กรอกอีเมลและรหัสผ่าน' });
+    }
 
     const user = await prisma.user.findUnique({
       where: { email }
     });
     
-    if (!user || !user.password) return res.status(401).json({ message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
+    if (!user) {
+      return res.status(401).json({ message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
+    }
+    
+    if (!user.password) {
+      console.error('User found but password field is null/undefined for email:', email);
+      return res.status(401).json({ message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
+    }
 
     const ok = await bcrypt.compare(password, user.password);
-    if (!ok) return res.status(401).json({ message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
+    if (!ok) {
+      return res.status(401).json({ message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
+    }
 
     const token = signToken({ id: user.id, email: user.email });
     res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
-  } catch (e) {
+  } catch (e: any) {
     console.error('Login error:', e);
-    res.status(500).json({ message: 'เกิดข้อผิดพลาด' });
+    console.error('Error details:', {
+      message: e?.message,
+      code: e?.code,
+      stack: e?.stack
+    });
+    res.status(500).json({ 
+      message: 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ',
+      error: process.env.NODE_ENV === 'development' ? e?.message : undefined
+    });
   }
 });
 

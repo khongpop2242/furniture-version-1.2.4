@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { getApiUrl } from '../config/api';
 import './Payment.css';
 
 const Payment = () => {
@@ -50,7 +51,7 @@ const Payment = () => {
       let userId = null;
       if (token) {
         try {
-          const userResponse = await axios.get('http://localhost:5050/api/user', {
+          const userResponse = await axios.get(getApiUrl('api/user'), {
             headers: { Authorization: `Bearer ${token}` }
           });
           userId = userResponse.data?.id;
@@ -64,7 +65,7 @@ const Payment = () => {
         ? JSON.stringify(orderData.deliveryAddress)
         : JSON.stringify(orderData.pickupAddress);
 
-      const response = await axios.post('http://localhost:5050/api/checkout/create', {
+      const response = await axios.post(getApiUrl('api/checkout/create'), {
         amount: orderData.totalAmount * 100, // แปลงเป็น satang
         email: orderData.customerEmail,
         userId: userId,

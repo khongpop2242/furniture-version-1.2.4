@@ -1,6 +1,12 @@
-# 🪑 Furniture Office - เว็บไซต์เฟอร์นิเจอร์ออฟฟิศ
+# 🪑 Kaokai Furniture - เว็บไซต์เฟอร์นิเจอร์ออฟฟิศ
 
-เว็บไซต์ E-commerce สำหรับเฟอร์นิเจอร์ออฟฟิศที่สร้างด้วย React และ Node.js พร้อมระบบฐานข้อมูล MySQL
+เว็บไซต์ E-commerce สำหรับเฟอร์นิเจอร์ออฟฟิศที่สร้างด้วย React และ Node.js พร้อมระบบฐานข้อมูล PostgreSQL (Prisma ORM)
+
+## 🌐 Deploy Status
+
+- **Frontend**: Deploy บน Vercel - เชื่อมต่อกับ Backend API อัตโนมัติ
+- **Backend API**: `https://kaokai-backend.onrender.com`
+- **Repository**: https://github.com/khongpop2242/kaokai-frontend
 
 ## ✨ คุณสมบัติ
 
@@ -26,8 +32,10 @@
 - **Node.js** - Runtime Environment
 - **Express.js** - Web Framework
 - **TypeScript** - Type Safety
-- **MySQL Database** - ฐานข้อมูลหลัก
-- **mysql2/promise** - MySQL Driver
+- **PostgreSQL Database** - ฐานข้อมูลหลัก
+- **Prisma ORM** - Database ORM
+- **Stripe** - Payment Gateway
+- **Nodemailer** - Email Service
 
 ### Development Tools
 - **Nodemon** - Auto-restart server
