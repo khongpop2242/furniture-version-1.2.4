@@ -1,0 +1,507 @@
+.payment-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 20px 0;
+}
+
+.payment-header {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #2c3e50;
+}
+
+.payment-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.payment-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.payment-left {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.payment-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Progress Steps */
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.progress-steps::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: #e9ecef;
+  z-index: 1;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  background: white;
+  padding: 0 15px;
+}
+
+.step i {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  background: #e9ecef;
+  color: #6c757d;
+}
+
+.step.completed i {
+  background: #28a745;
+  color: white;
+}
+
+.step.active i {
+  background: #dc3545;
+  color: white;
+}
+
+.step span {
+  font-size: 0.9rem;
+  color: #6c757d;
+  text-align: center;
+}
+
+.step.completed span {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.step.active span {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+/* ข้อมูลการจัดส่ง */
+.delivery-info,
+.invoice-info {
+  margin-bottom: 30px;
+}
+
+.delivery-info h2,
+.invoice-info h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.info-section {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.info-section h4 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.address-details p {
+  margin: 8px 0;
+  color: #495057;
+}
+
+/* ข้อมูลลูกค้า */
+.customer-info {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.customer-info h3 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.customer-details p {
+  margin: 8px 0;
+  color: #495057;
+}
+
+/* สรุปคำสั่งซื้อ */
+.order-summary {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.order-summary h3 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.order-items {
+  margin-bottom: 20px;
+}
+
+.order-item {
+  display: flex;
+  gap: 15px;
+  padding: 15px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
+
+.item-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+
+.item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-details {
+  flex: 1;
+}
+
+.item-details h4 {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  color: #2c3e50;
+}
+
+.product-code {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 5px;
+}
+
+.item-price {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #28a745;
+}
+
+.order-total {
+  padding-top: 15px;
+  border-top: 2px solid #e9ecef;
+  text-align: center;
+}
+
+.order-total p {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  margin: 0;
+}
+
+/* QR Code Payment Section */
+.qr-payment-section {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 30px;
+  border: 2px solid #e9ecef;
+}
+
+.qr-payment-section h3 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+}
+
+.qr-code-container {
+  margin-bottom: 20px;
+}
+
+.qr-code-placeholder {
+  background: white;
+  border: 2px dashed #dee2e6;
+  border-radius: 10px;
+  padding: 40px;
+  margin: 0 auto;
+  max-width: 300px;
+}
+
+.qr-code-placeholder i {
+  font-size: 3rem;
+  color: #6c757d;
+  margin-bottom: 15px;
+}
+
+.qr-code-placeholder p {
+  margin: 8px 0;
+  color: #6c757d;
+}
+
+.qr-instruction {
+  font-size: 0.9rem;
+  color: #495057;
+  font-weight: 500;
+}
+
+.payment-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #007bff;
+  font-weight: 500;
+}
+
+.payment-status i {
+  font-size: 1.2rem;
+}
+
+/* Payment Status Messages */
+.payment-success {
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.payment-success i {
+  font-size: 3rem;
+  color: #28a745;
+  margin-bottom: 15px;
+}
+
+.payment-success h3 {
+  color: #28a745;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.payment-success p {
+  color: #155724;
+  margin: 0;
+}
+
+.payment-failed {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.payment-failed i {
+  font-size: 3rem;
+  color: #dc3545;
+  margin-bottom: 15px;
+}
+
+.payment-failed h3 {
+  color: #dc3545;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.payment-failed p {
+  color: #721c24;
+  margin: 0;
+}
+
+/* การดำเนินการ */
+.payment-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.payment-btn {
+  width: 100%;
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.payment-btn:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+.payment-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-success {
+  background: #28a745;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #218838;
+  transform: translateY(-1px);
+}
+
+/* Loading และ Error */
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.loading-container i {
+  font-size: 2rem;
+  color: #6c757d;
+  margin-bottom: 15px;
+}
+
+.error-container i {
+  font-size: 2rem;
+  color: #dc3545;
+  margin-bottom: 15px;
+}
+
+.error-container p {
+  font-size: 1.1rem;
+  color: #6c757d;
+  margin-bottom: 20px;
+}
+
+.error-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+  transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .payment-content {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .progress-steps {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .progress-steps::before {
+    display: none;
+  }
+  
+  .payment-actions {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .payment-header h1 {
+    font-size: 2rem;
+  }
+  
+  .payment-left,
+  .customer-info,
+  .order-summary {
+    padding: 20px;
+  }
+  
+  .order-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .item-image {
+    width: 100%;
+    height: 120px;
+  }
+}

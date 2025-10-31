@@ -1,81 +1,60 @@
-.promotions-page {
-  padding: 40px 0;
-}
+/* รีเซ็ต padding เดิมของหน้าโปรโมชัน */
+.promotions-page { padding: 0; }
 
-.promotions-page h1 {
+/* ฮีโร่กลางหน้า */
+.promo-hero {
+  min-height: 70vh;                /* ให้กินพื้นที่จอส่วนใหญ่ */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  margin-bottom: 40px;
-  color: #333;
-  font-size: 2.5rem;
 }
 
-.promotions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 30px;
+.promo-hero .container {
+  padding: 48px 16px;
 }
 
-.promotion-card {
-  background: white;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+/* บรรทัด "COMING SOON !!!" */
+.promo-eyebrow {
+  margin: 0 0 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #111;
+  font-size: clamp(32px, 6vw, 50px);
 }
 
-.promotion-card:hover {
-  transform: translateY(-5px);
-}
-
-.promotion-image {
-  position: relative;
-  height: 200px;
-  overflow: hidden;
-}
-
-.promotion-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.discount-badge {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: #dc3545;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 20px;
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-
-.promotion-info {
-  padding: 20px;
-}
-
-.promotion-info h3 {
-  font-size: 1.3rem;
-  margin-bottom: 10px;
-  color: #333;
-}
-
-.promotion-info p {
-  color: #666;
-  margin-bottom: 10px;
-  line-height: 1.6;
-}
-
-.valid-until {
-  color: #dc3545;
+/* บรรทัดคำอธิบายยาว */
+.promo-title {
+  margin: 0 0 24px;
   font-weight: 500;
-  font-size: 0.9rem;
+  line-height: 1.25;
+  color: #111;
+  font-size: clamp(22px, 4.5vw, 40px);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .promotions-grid {
-    grid-template-columns: 1fr;
-  }
-} 
+/* บรรทัด "สูงสุด 80%" */
+.promo-discount {
+  margin: 0 0 24px;
+  font-weight: 400;
+  color: #111;
+  font-size: clamp(28px, 5vw, 72px);
+}
+
+/* ตัวเลข 80% สีแดง ขนาดใหญ่กว่า */
+.promo-discount .accent {
+  color: #FF0000;                  /* แดงสด */
+  font-weight: 700;
+  font-size: clamp(42px, 7.5vw, 62px);
+}
+
+/* บรรทัดหมายเหตุ */
+.promo-note {
+  margin-top: 8px;
+  color: #000000;
+  font-size: clamp(14px, 2vw, 20px);
+}
+
+/* ถ้าคุณมี .container อยู่แล้วไม่ต้องเพิ่ม ส่วนนี้เป็น fallback */
+@media (min-width: 1200px) {
+  .container { max-width: 1200px; margin: 0 auto; }
+}

@@ -1,71 +1,79 @@
-import React from 'react';
-import './About.css';
+import React from "react";
+import "./About.css";
+
 
 const About = () => {
+  const productFiles = [
+    "KEL-039.jpg",
+    "KEL-077.jpg",
+    "KEL-109.jpg",
+    "KEL-110.jpg",
+    "KEL-111.jpg",
+    "KEL-112.jpg",
+    "KEL-130.jpg",
+    "KEL-152.jpg",
+  ];
   return (
+    
     <div className="about-page">
-      <div className="container">
-        <h1>เกี่ยวกับเรา</h1>
-        <div className="about-content">
-          <div className="about-section">
-            <h2>ประวัติบริษัท</h2>
-            <p>
-              KaokaiOfficeFurniture ก่อตั้งขึ้นในปี 2010 ด้วยความมุ่งมั่นที่จะเป็นผู้นำในการจัดจำหน่ายเฟอร์นิเจอร์สำนักงานคุณภาพสูง 
-              เราเริ่มต้นจากการเป็นร้านค้าเล็กๆ และเติบโตขึ้นจนกลายเป็นหนึ่งในผู้จัดจำหน่ายเฟอร์นิเจอร์สำนักงานที่ได้รับความไว้วางใจมากที่สุดในประเทศไทย
-            </p>
-            <p>
-              ตลอดระยะเวลา 14 ปีที่ผ่านมา เราได้ให้บริการลูกค้าหลายพันราย ทั้งบริษัทขนาดเล็ก กลาง และใหญ่ 
-              ด้วยประสบการณ์และความเชี่ยวชาญในการเลือกเฟอร์นิเจอร์ที่เหมาะสมกับความต้องการของลูกค้า
-            </p>
-          </div>
+      {/* HERO */}
+      <section
+        className="about-hero"
+        style={{
+          backgroundImage: `url(${process.env.PUBLIC_URL}/images/BG001.jpg)`
+        }}
+      >
+        <div className="container hero-inner">
+          <h1 className="hero-title">ก้าวไกลออฟฟิศเฟอร์นิเจอร์</h1>
+        </div>
+      </section>
 
-          <div className="about-section">
-            <h2>วิสัยทัศน์</h2>
-            <p>
-              เรามุ่งมั่นที่จะเป็นผู้นำในการจัดจำหน่ายเฟอร์นิเจอร์สำนักงานที่ทันสมัย มีคุณภาพ และราคาเป็นมิตร 
-              เพื่อช่วยให้องค์กรต่างๆ สามารถสร้างสภาพแวดล้อมการทำงานที่ดีและมีประสิทธิภาพ
-            </p>
-          </div>
+      {/* INTRO (ข้อความกลางสั้น ๆ เหมือนภาพ) */}
+      <section className="about-intro">
+        <div className="container">
+          <h2 className="intro-brand">ก้าวไกลออฟฟิศเฟอร์นิเจอร์</h2>
+          <p className="intro-line">
+            พบกับโชว์รูมเฟอร์นิเจอร์คุณภาพ สำหรับบ้าน คอนโด และสำนักงาน
+          </p>
+          <p className="intro-line">
+            พร้อมบริการ ที่ตอบโจทย์ ราคาสบายกระเป๋า
+          </p>
+          <p className="intro-line">
+            เรามีสินค้าให้เลือกหลากหลาย เช่น โต๊ะ เก้าอี้ ตู้ ชั้นวางของ
+          </p>
+        </div>
+      </section>
 
-          <div className="about-section">
-            <h2>พันธกิจ</h2>
-            <ul>
-              <li>จัดจำหน่ายเฟอร์นิเจอร์สำนักงานคุณภาพสูง ราคาเป็นมิตร</li>
-              <li>ให้บริการลูกค้าด้วยความซื่อสัตย์ โปร่งใส และเป็นมิตร</li>
-              <li>พัฒนาผลิตภัณฑ์และบริการอย่างต่อเนื่อง</li>
-              <li>สร้างความพึงพอใจให้กับลูกค้าทุกคน</li>
-            </ul>
-          </div>
-
-          <div className="about-section">
-            <h2>จุดเด่นของเรา</h2>
-            <div className="features-grid">
-              <div className="feature-item">
-                <i className="fas fa-medal"></i>
-                <h3>คุณภาพสูง</h3>
-                <p>เฟอร์นิเจอร์ทุกชิ้นผ่านการคัดสรรและทดสอบคุณภาพอย่างเข้มงวด</p>
-              </div>
-              <div className="feature-item">
-                <i className="fas fa-tags"></i>
-                <h3>ราคาเป็นมิตร</h3>
-                <p>ราคาโรงงาน ต้นทุนต่ำ กำไรน้อย เพื่อลูกค้า</p>
-              </div>
-              <div className="feature-item">
-                <i className="fas fa-truck"></i>
-                <h3>บริการจัดส่ง</h3>
-                <p>จัดส่งทั่วประเทศ ปลอดภัย ตรงเวลา</p>
-              </div>
-              <div className="feature-item">
-                <i className="fas fa-headset"></i>
-                <h3>บริการหลังการขาย</h3>
-                <p>รับประกัน 1 ปี และบริการซ่อมบำรุง</p>
-              </div>
+      {/* FEATURES (คงของเดิมไว้) */}
+      <section className="about-features">
+        <div className="container">
+          <h2>จุดเด่นของเรา</h2>
+          <div className="features-grid">
+            <div className="feature-item">
+              <i className="fas fa-medal"></i>
+              <h3>คุณภาพสูง</h3>
+              <p>เฟอร์นิเจอร์ทุกชิ้นผ่านการคัดสรรและทดสอบคุณภาพอย่างเข้มงวด</p>
+            </div>
+            <div className="feature-item">
+              <i className="fas fa-tags"></i>
+              <h3>ราคาเป็นมิตร</h3>
+              <p>ราคาโรงงาน ต้นทุนต่ำ กำไรน้อย เพื่อลูกค้า</p>
+            </div>
+            <div className="feature-item">
+              <i className="fas fa-truck"></i>
+              <h3>บริการจัดส่ง</h3>
+              <p>จัดส่งทั่วประเทศ ปลอดภัย ตรงเวลา</p>
+            </div>
+            <div className="feature-item">
+              <i className="fas fa-headset"></i>
+              <h3>บริการหลังการขาย</h3>
+              <p>รับประกัน 1 ปี และบริการซ่อมบำรุง</p>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
 
-export default About; 
+export default About;

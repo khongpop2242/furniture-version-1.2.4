@@ -17,6 +17,10 @@ import AdminDashboard from './pages/AdminDashboard';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import ProductDetail from './pages/ProductDetail';
+import Favorites from './pages/Favorites';
+import Checkout from './pages/Checkout';
+import Payment from './pages/Payment';
+import OrderDetail from './pages/OrderDetail';
 
 function App() {
   return (
@@ -32,13 +36,17 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/favorites" element={<Favorites />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/payment" element={<Payment />} />
             <Route path="/checkout/success" element={<CheckoutSuccess />} />
+            <Route path="/order/:orderId" element={<OrderDetail />} />
           </Routes>
         </main>
         <Footer />

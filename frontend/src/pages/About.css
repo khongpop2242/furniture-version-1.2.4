@@ -1,104 +1,177 @@
-.about-page {
-  padding: 40px 0;
+/* ---------- HERO ---------- */
+.about-hero {
+  /* สีเทาสำรอง ถ้ารูปโหลดช้า */
+  background-color: #e6e7e9;
+  /* ใช้ภาพให้พอดีพื้นที่ */
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  position: relative;
+  padding: 180px 0;           /* กำหนดความสูงบล็อก */
+  overflow: hidden;
+  border: 0;                 /* ไม่มีกรอบภายใน */
 }
 
-.about-page h1 {
+/* ชั้นฟิล์มบาง ๆ เพื่อให้อ่านตัวอักษรชัด */
+.about-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.25);  /* ปรับความทึบตามต้องการ */
+}
+
+/* จัด title ให้อยู่หน้า (เหนือฟิล์ม) */
+.hero-inner {
+  position: relative;
+  z-index: 1;                /* ให้อยู่ด้านหน้ารูป/ฟิล์ม */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-title {
+  font-size: clamp(40px, 7vw, 86px);
+  font-weight: 800;
+  color: #fff;               /* สีขาวทับภาพ */
+  letter-spacing: 1.5px;
   text-align: center;
-  margin-bottom: 40px;
+  text-shadow: 0 3px 0 rgba(0,0,0,0.18), 0 0 1px rgba(0,0,0,0.2);
+}
+.hero-title {
+  font-size: clamp(40px, 7vw, 86px);
+  font-weight: 800;
+  color: #fff;                         /* สีตัวอักษรหลัก */
+  letter-spacing: 1.5px;
+  text-align: center;
+
+  /* เส้นขอบ (รองรับ Safari/Chromium) */
+  -webkit-text-stroke: 1px rgba(0,0,0,0.35);
+
+  /* เผื่อเบราว์เซอร์ที่ไม่รองรับ text-stroke */
+  text-shadow:
+    0 0 2px rgba(0,0,0,0.6),
+    0 2px 4px rgba(0,0,0,0.45),
+    1px 0 0 rgba(0,0,0,0.5),
+    -1px 0 0 rgba(0,0,0,0.5),
+    0 1px 0 rgba(0,0,0,0.5),
+    0 -1px 0 rgba(0,0,0,0.5);
+}
+
+/* ลดความหนาขอบบนจอเล็ก */
+@media (max-width: 768px){
+  .hero-title {
+    -webkit-text-stroke: 2px rgba(0,0,0,0.35);
+  }
+}
+
+
+/* ลบกฎเดิมของ .hero-photo ถ้ายังเหลืออยู่ ให้เอาออกทั้งหมด */
+
+.hero-photo {
+  width: min(980px, 100%);
+  height: 260px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: #d1d3d6; /* เผื่อโหลดไม่ทัน */
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.08);
+}
+
+@media (max-width: 768px){
+  .hero-photo { height: 180px; }
+}
+.hero-inner { display: flex; flex-direction: column; align-items: center; gap: 28px; }
+.hero-title {
+  font-size: clamp(40px, 7vw, 86px);  /* ใหญ่มากแต่ย่ออัตโนมัติ */
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 1.5px;
+  text-shadow: 0 3px 0 rgba(0,0,0,0.1), 0 0 1px rgba(0,0,0,0.2);
+}
+.hero-photo {
+  width: min(980px, 100%);
+  height: 180px;                     /* กล่องเทาอ่อน “(รูปบริษัท)” */
+  background: #d1d3d6;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
   color: #333;
-  font-size: 2.5rem;
+  font-size: clamp(16px, 2.6vw, 22px);
 }
 
-.about-content {
-  max-width: 800px;
-  margin: 0 auto;
+/* ---------- INTRO ---------- */
+.about-intro { padding: 34px 0 18px; text-align: center; }
+.intro-brand {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.intro-line {
+  margin: 4px 0;
+  color: #222;
+  line-height: 1.6;
+  font-size: 15px;
 }
 
-.about-section {
-  margin-bottom: 50px;
+/* ---------- COLLAGE GRID ---------- */
+.about-collage { padding: 14px 0 42px; }
+.collage-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* เหมือนภาพ 4 คอลัมน์ */
+  gap: 36px 48px;
+  justify-items: center;
 }
+.collage-grid img {
+  width: 100%;
+  max-width: 240px;     /* จำกัดให้ดูโปร่ง */
+  height: auto;
+  object-fit: contain;  /* ไม่บิดรูป */
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,.08));
+  transition: transform .25s ease;
+}
+.collage-grid img:hover { transform: translateY(-4px) scale(1.02); }
 
-.about-section h2 {
+/* ---------- FEATURES (ของเดิม) ---------- */
+.about-features { padding-top: 12px; }
+.about-features h2 {
   color: #dc3545;
   margin-bottom: 20px;
   font-size: 1.8rem;
   font-weight: bold;
+  text-align: center;
 }
-
-.about-section p {
-  color: #666;
-  line-height: 1.8;
-  margin-bottom: 15px;
-  font-size: 1.1rem;
-}
-
-.about-section ul {
-  list-style: none;
-  padding: 0;
-}
-
-.about-section ul li {
-  color: #666;
-  line-height: 1.8;
-  margin-bottom: 10px;
-  padding-left: 20px;
-  position: relative;
-  font-size: 1.1rem;
-}
-
-.about-section ul li:before {
-  content: "•";
-  color: #dc3545;
-  font-weight: bold;
-  position: absolute;
-  left: 0;
-}
-
 .features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 30px;
-  margin-top: 30px;
+  margin-top: 10px;
 }
-
 .feature-item {
   text-align: center;
-  padding: 30px 20px;
+  padding: 28px 20px;
   background: #f8f9fa;
   border-radius: 10px;
   transition: transform 0.3s ease;
 }
 
-.feature-item:hover {
-  transform: translateY(-5px);
+.feature-item i { font-size: 3rem; color: #C00101; margin-bottom: 16px; }
+.feature-item h3 { color: #333; margin-bottom: 10px; font-size: 1.2rem; font-weight: bold; }
+.feature-item p { color: #666; line-height: 1.6; font-size: 1rem; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px){
+  .collage-grid { grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .collage-grid img { max-width: 220px; }
+}
+@media (max-width: 768px){
+  .hero-photo { height: 140px; }
+  .collage-grid { grid-template-columns: repeat(2, 1fr); gap: 22px; }
+  .collage-grid img { max-width: 200px; }
+}
+@media (max-width: 480px){
+  .collage-grid { grid-template-columns: 1fr; }
+  .collage-grid img { max-width: 260px; }
 }
 
-.feature-item i {
-  font-size: 3rem;
-  color: #dc3545;
-  margin-bottom: 20px;
-}
-
-.feature-item h3 {
-  color: #333;
-  margin-bottom: 15px;
-  font-size: 1.3rem;
-  font-weight: bold;
-}
-
-.feature-item p {
-  color: #666;
-  line-height: 1.6;
-  font-size: 1rem;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .features-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .about-section {
-    margin-bottom: 40px;
-  }
-} 

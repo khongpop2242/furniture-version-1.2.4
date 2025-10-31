@@ -13,7 +13,7 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const res = await axios.post('http://localhost:5050/api/auth/login', { email, password });
       localStorage.setItem('token', res.data.token);
       window.location.href = '/profile';
     } catch (err) {
@@ -27,14 +27,18 @@ export default function Login() {
     <div className="login-page">
       <div className="login-container">
         <div className="login-left">
-          <div className="brand-logo">
-            <div className="logo-box">K</div>
-            <div className="brand-text">
-              <div className="brand-line">Furniture</div>
-              <div className="brand-line secondary">KaoKai</div>
-            </div>
-          </div>
-        </div>
+  <div className="brand-logo">
+    {/* ใช้โลโก้จาก public/images */}
+    <img
+      className="photo-left"
+      src="/images/logo-login-kaokai.png"
+      alt="KaoKai Furniture"
+      loading="eager"
+      decoding="async"
+    />
+  </div>
+</div>
+
         <div className="login-right">
           <h1>เข้าสู่ระบบ</h1>
           <form onSubmit={onSubmit} className="login-form">
@@ -43,8 +47,9 @@ export default function Login() {
             <label>รหัสผ่าน</label>
             <input type="password" placeholder="ระบุรหัสผ่าน ( อย่างน้อย8ตัวอักษร )" value={password} onChange={(e)=>setPassword(e.target.value)} required />
             <div className="login-utils">
-              <a href="/forgot-password" style={{color: '#667eea', textDecoration: 'none', fontSize: '14px'}}>ลืมรหัสผ่าน?</a>
-            </div>
+  <a className="forgot-link" href="/forgot-password">ลืมรหัสผ่าน?</a>
+</div>
+
             {error && <div className="error">{error}</div>}
             <button className="btn-login" type="submit" disabled={loading}>
               {loading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}

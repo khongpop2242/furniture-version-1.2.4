@@ -1,259 +1,323 @@
-.header {
-  background: white;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+/* ===== Header base ===== */
+.header { background:#fff; box-shadow:0 2px 5px rgba(0,0,0,.08); }
+.header-top { padding:18px 0; border-bottom:1px solid #eee; }
+
+.header-top-content{
+  display:flex; align-items:center; justify-content:space-between; gap:28px;
 }
 
-.header-top {
-  padding: 15px 0;
-  border-bottom: 1px solid #eee;
+/* ===== Logo ===== */
+.logo { 
+  display:flex; align-items:center; gap:0; text-decoration:none;
 }
-
-.header-top-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.logo-icon {
-  width: 40px;
+.logo-img{
   height: 40px;
-  background-color: #dc3545;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 20px;
-  border-radius: 5px;
-}
-
-.logo-text {
-  font-weight: bold;
-  color: #333;
-  font-size: 16px;
-}
-
-.search-bar {
-  flex: 1;
-  max-width: 400px;
-  position: relative;
-}
-
-.search-bar form {
-  display: flex;
-  position: relative;
-}
-
-.search-bar input {
-  width: 100%;
-  padding: 10px 40px 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 25px;
-  font-size: 14px;
-}
-
-.search-bar button {
-  position: absolute;
-  right: 5px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #666;
-  cursor: pointer;
-  padding: 5px;
-}
-
-/* Autocomplete */
-.search-suggestions {
-  position: absolute;
-  top: 42px;
-  left: 0;
-  right: 0;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  max-height: 300px;
-  overflow-y: auto;
-  z-index: 20;
-  padding: 6px 0;
-}
-
-.search-suggestions li {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 12px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.search-suggestions li:hover {
-  background: #f9fafb;
-}
-
-.suggest-name {
-  color: #111827;
-}
-
-.suggest-model {
-  color: #6b7280;
-  margin-left: 12px;
-}
-
-.contact-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.phone-btn {
-  padding: 8px 12px;
-  border-radius: 5px;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 12px;
-}
-
-.phone-green {
-  background-color: #28a745;
-  color: white;
-}
-
-.phone-red {
-  background-color: #dc3545;
-  color: white;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.cart-icon, .profile-icon, .admin-icon {
-  position: relative;
-  color: #333;
-  font-size: 20px;
-  text-decoration: none;
-  margin: 0 10px;
-  transition: all 0.3s ease;
-}
-
-.auth-links {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.login-link {
-  color: #333;
-  text-decoration: none;
-  font-size: 20px;
-  padding: 8px;
-  border-radius: 4px;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-link:hover {
-  color: #dc3545;
-}
-
-.admin-icon {
-  color: #dc3545;
-}
-
-.admin-icon:hover {
-  color: #c82333;
-  transform: scale(1.1);
-}
-
-.cart-badge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: #dc3545;
-  color: white;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-weight: bold;
-}
-
-.navigation {
-  background-color: #dc3545;
-  padding: 0;
-}
-
-.nav-menu {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  justify-content: center;
-  align-items: center;
-}
-
-.nav-menu li {
-  margin: 0;
-  flex: 1;
-  display: flex;
-}
-
-.nav-menu a {
+  width: auto;
   display: block;
-  padding: 18px 20px;
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 16px;
-  text-align: center;
-  transition: background-color 0.3s ease;
-  flex: 1;
-  white-space: nowrap;
+  object-fit: contain;
 }
 
-.nav-menu a:hover {
-  background-color: #c82333;
+/* ปรับขนาดบนจอเล็ก */
+@media (max-width: 768px){
+  .logo-img{ height: 42px; }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .header-top-content {
+/* ===== Search (แคปซูล + ไอคอนวงกลมขวา) ===== */
+.search-bar{ flex:1; max-width:720px; position:relative; }
+.search-bar form{ display:flex; position:relative; }
+.search-bar input{
+  width:100%; height:42px; padding:0 64px 0 18px;
+  border:1px solid #ddd; border-radius:32px; background:#f3f4f6;
+  font-size:15px; color:#111; outline:none;
+  box-shadow:inset 0 1px 0 rgba(0,0,0,.02);
+}
+.search-bar input::placeholder{ color:#9ca3af; }
+.search-bar button{
+  position:absolute; right:12px; top:50%; transform:translateY(-50%);
+  width:auto; height:auto; border-radius:0;
+  background:transparent; border:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:opacity .15s ease;
+}
+.search-bar button:hover{ opacity:.7; }
+.search-bar .fas.fa-search{ font-size:20px; color:#000000; font-weight:100; }
+
+
+/* ===== Suggestion dropdown ===== */
+.search-suggestions{
+  position:absolute; top:58px; left:0; right:0;
+  background:#fff; border:1px solid #e5e7eb; border-radius:12px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+  max-height:320px; overflow:auto; z-index:50; padding:6px 0;
+}
+.search-suggestions li{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:11px 14px; font-size:14px; cursor:pointer;
+}
+.search-suggestions li:hover{ background:#f9fafb; }
+.suggest-name{ color:#111827; }
+.suggest-model{ color:#6b7280; margin-left:12px; }
+
+/* responsive */
+@media (max-width: 992px){
+  .search-bar{ max-width:100%; }
+}
+@media (max-width: 768px){
+  .header-top-content{ flex-direction:column; gap:12px; }
+  .contact-info{ flex-wrap:wrap; justify-content:center; }
+  .nav-menu{ flex-direction:column; }
+  .nav-menu a{ font-size:16px; padding:14px 16px; }
+}
+
+/* contact pills */
+.contact-info{ display:flex; align-items:center; gap:10px; }
+.pill{
+  display:inline-flex; align-items:center; gap:8px;
+  height:38px; padding:0 14px; border-radius:999px;
+  font-weight:700; font-size:13px; text-decoration:none;
+  box-shadow:0 2px 6px rgba(0,0,0,.08) inset;
+  white-space:nowrap;
+}
+.pill-ic{ font-size:14px; }
+.pill-green{ background:#09a52a; color:#fff; }
+.pill-red{ background:#d51616; color:#fff; }
+.btn-secondary{ background:#BBBBBB; color:#fff; letter-spacing:.5px; }
+
+/* actions */
+.header-actions{ display:flex; align-items:center; gap:16px; }
+.cart-icon, .profile-icon{ position:relative; color:#111; text-decoration:none; }
+.cart-icon i{ font-size:24px; }
+.profile-icon i{ font-size:28px; }
+
+/* ==== Contact pills: exact colors ==== */
+.pill {
+  color: #FFFFFF;                /* ให้ตัวอักษรเป็นขาว */
+}
+.pill-green { background: #06C755; }  /* LINE green */
+.pill-red   { background: #D20104; }  /* Phone red */
+.pill-gray  { background: #6B7280; }  /* CONTACT เทา */ 
+
+/*hover */
+.pill-green:hover{ color:#000000; }
+.pill-red:hover{ color:#000000; }
+
+/* CONTACT เทา (pill-gray) — hover/active/focus */
+.pill-gray{
+  background:#BBBBBB;   /* เทาปกติ */
+  color:#fff;
+  cursor:pointer;
+  transition: background-color .5s ease, box-shadow .5s ease, transform .12s ease;
+}
+
+.pill-gray:hover{
+  background:#000000;   /* เทาอ่อนขึ้นเมื่อเอาเมาส์ชี้ */
+}
+
+.pill-gray:active{
+  background:#4B5563;   /* กดค้างให้เข้มขึ้นนิด */
+  transform: translateY(1px);
+}
+
+.pill-gray:focus-visible{
+  outline: 2px solid #E5E7EB;   /* วงโฟกัสบางๆ */
+  outline-offset: 2px;
+}
+
+
+/* ให้ไอคอนเป็นขาวไม่ว่ารูปแบบไหน */
+.pill i,
+.pill .pill-ic { color: inherit; }        /* Font Awesome <i> */
+.pill svg { stroke: currentColor; fill: none; }  /* ถ้าใช้ SVG */
+.pill img { filter: brightness(0) invert(1); }   /* ถ้าเป็นรูป PNG สีเข้ม ให้กลับเป็นขาว */
+
+
+/* ขนาดและระยะของโลโก้ในปุ่ม LINE */
+.pill-logo{
+  width: 25px;
+  height: 25px;
+  display: block;
+  object-fit: contain;
+  margin-right: -8px;
+}
+
+/* ป้องกันไม่ให้โดนกฎ invert ทั่วไป */
+.pill-green .pill-logo{ filter: none !important; }
+
+/* CONTACT เทา */
+.btn.btn-secondary{
+  background:#d1d5db; color:#fff; text-transform:uppercase; letter-spacing:.4px;
+  padding:10px 18px; border-radius:9999px; font-weight:700;
+}
+
+
+/* ===== Header actions (cart/admin/profile) ===== */
+.header-actions{ display:flex; align-items:center; gap:16px; }
+.cart-icon, .profile-icon, .admin-icon,.login-link{
+  position:relative; color:#111; font-size:22px; text-decoration:none;
+  transition:transform .15s ease;
+}
+.cart-icon:hover, .profile-icon:hover, .admin-icon:hover ,.login-link:hover { transform:scale(1.06); }
+.admin-icon{ color:#b40000; }
+.admin-icon:hover{ color:#8f0000; }
+.cart-badge{
+  position:absolute; top:-6px; right:-10px;
+  min-width:18px; height:18px; padding:0 4px;
+  background:#dc3545; color:#fff; border-radius:9999px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:800;
+}
+
+/* ===== Auth (มีใช้งานใน JSX) ===== */
+.auth-links{ display:flex; gap:10px; align-items:center; }
+.login-link{
+  color:#333; text-decoration:none; font-size:25px;
+  padding:8px; border-radius:4px; display:flex; align-items:center; justify-content:center;
+  transition:color .2s ease;
+}
+.login-link:hover{ color:#000000; }
+
+/* ===== Navigation bar ===== */
+.navigation{ background:#b02218; }
+
+/* กระจายเต็มความกว้างแบบห่างเท่ากัน */
+.nav-menu{
+  display:flex; list-style:none; margin:0; padding:0;
+  justify-content:space-between;   /* กระจายหัว-ท้ายเท่ากัน */
+  align-items:center;
+  gap:0;                           /* ไม่ใช้ gap คุมระยะแล้ว */
+}
+.nav-menu li{
+  margin:0;
+  flex:1;                          /* แต่ละรายการกินพื้นที่เท่ากัน */
+  display:flex;
+}
+.nav-menu a{
+  flex:1;
+  display:block;
+  text-align:center;
+  padding:16px 0;
+  color:#fff; text-decoration:none;
+  font-weight:700; font-size:20px; letter-spacing:.2px;
+
+  /* เอฟเฟกต์ขยาย */
+  transform:translateZ(0);         /* กันกระตุก */
+  transition: transform .12s ease, opacity .15s ease;
+}
+.nav-menu a:hover,
+.nav-menu a:focus-visible{
+  transform: scale(1.06);          /* ขยายเล็กน้อย */
+  opacity:1;                       /* คงความชัด */
+}
+.nav-menu a:active{
+  transform: scale(1.03);          /* ย่อกลับนิดเมื่อคลิก */
+}
+
+/* ===== Responsive ===== */
+@media (max-width:1024px){
+  .search-bar{ max-width:100%; }
+}
+@media (max-width:768px){
+  .header-top-content{ flex-direction:column; align-items:stretch; gap:14px; }
+  .contact-info{ justify-content:center; flex-wrap:wrap; }
+  .nav-menu{ flex-direction:column; }
+  .nav-menu li{ flex:none; }
+  .nav-menu a{ padding:14px 0; font-size:18px; transform:none; }
+}
+
+
+/* --- จัดเลย์เอาต์ให้หายแน่นบนจอเล็ก --- */
+@media (max-width: 992px){
+  .header-top-content{
+    display: grid;
+    grid-template-columns: 1fr auto;   /* โลโก้ | actions+hamburger */
+    grid-template-areas:
+      "logo actions"
+      "search search"
+      "contact contact";
+    row-gap: 10px;
+    align-items: center;
+  }
+  .logo{ grid-area: logo; }
+  .header-actions{ grid-area: actions; justify-self: end; display:flex; gap:12px; }
+  .search-bar{ grid-area: search; max-width: 100%; }
+  .contact-info{ grid-area: contact; justify-content: flex-start; flex-wrap: wrap; gap:8px; }
+
+  /* ปรับขนาดปุ่มให้คลิกง่าย */
+  .pill{ height: 36px; padding: 0 12px; font-size: 13px; }
+  .pill-logo{ width:22px; height:22px; margin-right: -4px; }
+  .cart-icon i{ font-size:22px; }
+  .profile-icon i{ font-size:24px; }
+}
+
+/* --- แสดง Hamburger เฉพาะจอเล็ก --- */
+.hamburger{ display:none; }
+@media (max-width: 992px){
+  .hamburger{
+    display:inline-flex;
+    width:40px; height:40px; border:1px solid #e5e7eb; border-radius:10px;
+    background:#fff; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .hamburger-box{ width:22px; height:16px; position:relative; display:block; }
+  .hamburger-inner,
+  .hamburger-inner::before,
+  .hamburger-inner::after{
+    content:""; position:absolute; left:0; right:0; height:2px; background:#111;
+    transition: transform .2s ease, opacity .2s ease, top .2s ease, bottom .2s ease;
+  }
+  .hamburger-inner{ top:50%; transform:translateY(-50%); }
+  .hamburger-inner::before{ top:-6px; }
+  .hamburger-inner::after{ bottom:-6px; }
+  .hamburger.is-active .hamburger-inner{ transform:rotate(45deg); }
+  .hamburger.is-active .hamburger-inner::before{ top:0; opacity:0; }
+  .hamburger.is-active .hamburger-inner::after{ bottom:0; transform:rotate(-90deg); }
+}
+
+/* --- เมนูพับ/กางบนมือถือ --- */
+@media (max-width: 992px){
+  .navigation{ background:#b02218; }
+  .nav-menu{
     flex-direction: column;
-    gap: 15px;
+    align-items: stretch;
+    gap: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .25s ease;
   }
-  
-  .search-bar {
-    max-width: 100%;
+  .navigation.is-open .nav-menu{ max-height: 500px; } /* พอสำหรับ 5 รายการ */
+  .nav-menu li{ flex:none; }
+  .nav-menu a{
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 18px;
+    border-top: 1px solid rgba(255,255,255,.15);
+    transform: none;               /* ตัดเอฟเฟกต์ขยายบนมือถือ กัน layout shift */
   }
-  
-  .contact-info {
-    flex-wrap: wrap;
-    justify-content: center;
+}
+
+/* --- จอเล็กมาก (<= 480px) ปรับสเกล --- */
+@media (max-width: 480px){
+  .pill{ height: 34px; padding: 0 10px; font-size: 12px; }
+  .pill span{ display:inline-block; transform: translateY(0.5px); }
+  .search-bar input{ height: 40px; }
+}
+
+/* --- เดสก์ท็อป: เมนูกระจายเท่ากัน + ขยายเล็กน้อยเวลา hover --- */
+@media (min-width: 993px){
+  .nav-menu{
+    justify-content: space-between;
+    gap: 0;
   }
-  
-  .nav-menu {
-    flex-direction: column;
+  .nav-menu li{ flex:1; display:flex; }
+  .nav-menu a{
+    flex:1; text-align:center;
+    transition: transform .12s ease, opacity .15s ease;
   }
-  
-  .nav-menu a {
-    padding: 15px 20px;
-    text-align: center;
-    font-size: 15px;
-  }
-} 
+  .nav-menu a:hover,
+  .nav-menu a:focus-visible{ transform: scale(1.06); }
+}
+
+@media (max-width: 420px){ .pill-gray{ display:none; } }
+
+.header-top{ position: sticky; top: 0; z-index: 30; background:#fff; }
+
+

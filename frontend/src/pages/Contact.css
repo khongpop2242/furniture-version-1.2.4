@@ -1,237 +1,134 @@
+/* layout base */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+
 .contact-page {
-  padding: 40px 0;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  min-height: 100vh;
+  background: #fff;               /* เรียบตามภาพ */
+  padding: 40px 0 28px;
 }
 
-.contact-page h1 {
-  text-align: center;
-  margin-bottom: 40px;
-  color: #333;
-  font-size: 2.5rem;
+/* 2 columns */
+.contact-wrap{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: start;
+}
+
+/* headings */
+.sec-title{
+  font-weight: 800;
+  font-size: 28px;
+  margin: 0 0 16px;
+  color: #111;
+}
+
+/* LEFT column */
+.col-left .company-text p { margin: 0 0 6px; color: #111; }
+
+.contactinfo-title{
+  margin: 26px 0 10px;
   font-weight: 700;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  font-size: 22px;
+  color: #111;
 }
 
-.contact-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 50px;
-  margin-bottom: 50px;
-}
-
-.contact-info h2,
-.contact-form h2 {
-  color: #333;
-  margin-bottom: 30px;
-  font-size: 1.8rem;
-  font-weight: 600;
-  border-bottom: 3px solid #dc3545;
-  padding-bottom: 10px;
+/* phone list (ไอคอนเรียงลงแนวตั้ง) */
+.phone-list { list-style: none; padding: 0; margin: 8px 0 0; }
+.phone-list li { margin: 14px 0; }
+.phone-icon{
+  font-family: "Font Awesome 5 Free","FontAwesome",sans-serif;
+  font-weight: 900;
+  font-size: 20px;
   display: inline-block;
+  /* ถ้าไม่มีฟอนต์ไอคอน จะใช้ยูนิโค้ดโทรศัพท์ธรรมดาแทนได้:
+     content: "☎";  (กรณีใช้ ::before) */
 }
 
-/* ข้อมูลติดต่อ */
-.contact-grid {
+/* RIGHT column: form */
+.contact-form{
   display: grid;
-  gap: 25px;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  max-width: 640px;
 }
 
-.contact-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  padding: 20px;
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.contact-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-}
-
-.contact-icon {
-  background: linear-gradient(135deg, #dc3545, #c82333);
-  color: white;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  flex-shrink: 0;
-}
-
-.contact-details h3 {
-  color: #333;
-  margin-bottom: 10px;
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.contact-details p {
-  color: #666;
-  margin-bottom: 5px;
-  line-height: 1.6;
-}
-
-.contact-details a {
-  color: #dc3545;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.contact-details a:hover {
-  color: #c82333;
-  text-decoration: underline;
-}
-
-/* ฟอร์มติดต่อ */
-.contact-form {
-  background: white;
-  padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.form-group {
-  margin-bottom: 25px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  color: #333;
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-.form-group input,
-.form-group textarea {
+/* แบบกล่องเรียบเหมือนภาพ */
+.contact-form input,
+.contact-form textarea{
   width: 100%;
-  padding: 15px;
-  border: 2px solid #e9ecef;
-  border-radius: 10px;
-  font-size: 14px;
-  font-family: inherit;
-  transition: all 0.3s ease;
-  background: #f8f9fa;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
+  padding: 12px 14px;
+  border: 1px solid #cfcfcf;
+  border-radius: 4px;
   outline: none;
-  border-color: #dc3545;
-  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
-  background: white;
+  background: #fff;
+  font-size: 14px;
 }
+.contact-form textarea{ resize: vertical; }
 
-.form-group textarea {
-  resize: vertical;
-  min-height: 120px;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #dc3545, #c82333);
-  color: white;
+/* ปุ่มดำเล็กชิดซ้าย */
+.btn-send{
+  width: 120px;
+  padding: 10px 12px;
+  background: #111;
+  color: #fff;
   border: none;
-  padding: 15px 30px;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: 600;
+  border-radius: 4px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+}
+.btn-send:hover{ background:#000; }
+
+/* visually hidden (ซ่อน label แต่ยังช่วยเรื่อง accessibility) */
+.vh{
+  position:absolute !important;
+  height:1px; width:1px;
+  overflow:hidden; clip: rect(1px, 1px, 1px, 1px);
+  white-space:nowrap;
+}
+
+/* company photo block */
+.company-photo{
+  max-width: 1100px;
+  margin: 40px auto 0;
+  height: 300px;
+  background: #ddd;                 /* เทาใหญ่เต็มบล็อก */
   display: flex;
   align-items: center;
-  gap: 10px;
   justify-content: center;
-  width: 100%;
+  color: #111;
+  font-size: 32px;
+  border-radius: 4px;
+}
+.company-photo span{ opacity: .9; }
+
+/* responsive */
+@media (max-width: 900px){
+  .contact-wrap{ grid-template-columns: 1fr; gap: 28px; }
+  .company-photo{ height: 240px; font-size: 24px; }
 }
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+.phone-list { list-style: none; padding: 0; margin: 8px 0 0; }
+.phone-list li { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+.phone-icon { width: 22px; text-align: center; font-size: 18px; }
+.phone-list a { color: #111; text-decoration: none; }
+.phone-list a:hover { text-decoration: underline; }
+
+
+.company-photo{
+  max-width: 1100px;
+  margin: 40px auto 0;
+  height: 400px;
+
+  /* ใช้รูปจาก inline style */
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  border-radius: 4px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.08);
 }
 
-/* ข้อมูลเพิ่มเติม */
-.contact-extra {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-  margin-top: 50px;
+/* เดิมเคยมีสีเทาและ <span> ข้อความ — ลบ <span> ออกแล้วไม่ต้องมีกฎสี/ตัวอักษร */
+@media (max-width: 900px){
+  .company-photo{ height: 240px; }
 }
-
-.extra-section {
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  text-align: center;
-  transition: transform 0.3s ease;
-}
-
-.extra-section:hover {
-  transform: translateY(-5px);
-}
-
-.extra-section h3 {
-  color: #333;
-  margin-bottom: 15px;
-  font-size: 1.3rem;
-  font-weight: 600;
-}
-
-.extra-section p {
-  color: #666;
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .contact-content {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-  
-  .contact-form {
-    padding: 25px;
-  }
-  
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  
-  .contact-extra {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  
-  .contact-page h1 {
-    font-size: 2rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .contact-item {
-    flex-direction: column;
-    text-align: center;
-    gap: 15px;
-  }
-  
-  .contact-icon {
-    align-self: center;
-  }
-} 

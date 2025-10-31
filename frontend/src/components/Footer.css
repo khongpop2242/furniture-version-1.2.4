@@ -1,98 +1,158 @@
 .footer {
-  background-color: #333;
-  color: white;
-  padding: 40px 0 20px;
+  background-color: #000;         /* ดำสนิทเหมือนในรูป */
+  color: #fff;
+  padding: 56px 0 64px;
 }
 
+/* GRID 4 คอลัมน์ กว้างและโปร่ง */
 .footer-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 40px;
-  margin-bottom: 30px;
+  grid-template-columns: 1.25fr 1fr 1fr 1fr;
+  gap: 80px;
+  align-items: flex-start;
 }
 
+/* หัวข้อคอลัมน์ สีขาว ตัวหนา ใหญ่ */
 .footer-section h3 {
-  color: #dc3545;
-  margin-bottom: 20px;
-  font-size: 1.2rem;
-  font-weight: bold;
+  color: #fff;
+  margin: 0 0 18px;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
+/* โลโก้ซ้ายบน */
 .footer-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 22px;
 }
-
 .footer-logo .logo-icon {
-  width: 40px;
-  height: 40px;
-  background-color: #dc3545;
-  color: white;
+  width: 48px;
+  height: 48px;
+  background-color: #dc3545;      /* กล่องแดงตัว K */
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  font-size: 20px;
-  border-radius: 5px;
+  font-weight: 800;
+  font-size: 24px;
+  border-radius: 10px;
 }
-
 .footer-logo .logo-text {
-  font-weight: bold;
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: .2px;
 }
 
+/* รายการข้อมูลติดต่อ สีขาว โปร่งเล็กน้อย */
 .contact-info p {
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  margin: 10px 0;
+  color: #fff;
+  opacity: .92;
+}
+.contact-info i {                 /* ซ่อนไอคอนให้ดูเรียบเหมือนภาพ */
+  display: none;
 }
 
-.contact-info i {
-  color: #dc3545;
-  width: 20px;
-}
-
+/* ลิสต์ลิงก์ */
 .footer-section ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
-
 .footer-section ul li {
-  margin-bottom: 10px;
+  margin: 12px 0;
 }
-
 .footer-section ul li a {
-  color: #ccc;
+  color: #fff;
   text-decoration: none;
-  transition: color 0.3s ease;
+  opacity: .92;
+  transition: opacity .2s ease, color .2s ease;
 }
-
 .footer-section ul li a:hover {
-  color: #dc3545;
+  opacity: 1;
+  color: #dc3545;                 /* โทนแดงเมื่อ hover */
 }
 
+/* ซ่อนเส้นคั่น/เครดิตด้านล่างเพื่อให้เหมือนภาพ */
 .footer-bottom {
-  border-top: 1px solid #555;
-  padding-top: 20px;
-  text-align: center;
-  color: #ccc;
+  display: none;
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+  .footer-content {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+}
+@media (max-width: 640px) {
   .footer-content {
     grid-template-columns: 1fr;
-    gap: 30px;
+    gap: 28px;
   }
-  
   .footer-section {
-    text-align: center;
+    text-align: left;             /* คงชิดซ้ายให้เหมือนภาพ */
   }
-  
-  .contact-info p {
-    justify-content: center;
-  }
-} 
+}
+
+.footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.footer-logo-img {
+  height: 48px;        /* ปรับได้ตามต้องการ: 40–56px */
+  width: auto;
+  display: block;
+  object-fit: contain;
+  border-radius: 10px; /* หากโลโก้มีมุมโค้งตามภาพตัวอย่าง */
+}
+
+/* ========== Footer compact sizing (override) ========== */
+
+/* ลด padding รวมลงเล็กน้อย */
+.footer {
+  padding: 48px 0 56px;
+}
+
+/* ลดช่องไฟระหว่างคอลัมน์นิดหน่อย */
+.footer-content {
+  gap: 64px;
+}
+
+/* โลโก้รูปภาพจาก public */
+.footer-logo-img {
+  height: 40px;   /* เดิม 48px */
+  width: auto;
+}
+
+/* หัวข้อคอลัมน์ให้เล็กลงนิดนึง */
+.footer-section h3 {
+  font-size: 24px;   /* เดิม ~28px */
+  margin-bottom: 16px;
+}
+
+/* ตัวหนังสือเนื้อหา/ลิงก์เล็กลงเล็กน้อยและอ่านง่าย */
+.contact-info p,
+.footer-section ul li a {
+  font-size: 16px;   /* หากเดิมใหญ่กว่านี้จะถูกบังคับให้เล็กลง */
+}
+
+/* ระยะระหว่างรายการให้กระชับ */
+.footer-section ul li {
+  margin: 10px 0;
+}
+
+/* Responsive: บนจอเล็ก ลดเพิ่มอีกนิด */
+@media (max-width: 640px) {
+  .footer-logo-img { height: 36px; }
+  .footer-section h3 { font-size: 20px; }
+  .contact-info p,
+  .footer-section ul li a { font-size: 15px; }
+}
+

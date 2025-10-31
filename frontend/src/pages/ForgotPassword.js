@@ -15,7 +15,7 @@ export default function ForgotPassword() {
     setLoading(true);
     
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/forgot-password', { email });
+      const res = await axios.post('http://localhost:5050/api/auth/forgot-password', { email });
       setMessage(res.data.message);
     } catch (err) {
       setError(err?.response?.data?.message || 'เกิดข้อผิดพลาด');
@@ -29,21 +29,21 @@ export default function ForgotPassword() {
       <div className="forgot-password-container">
         <div className="forgot-password-left">
           <div className="brand-logo">
-            <div className="logo-box">K</div>
-            <div className="brand-text">
-              <div className="brand-line">Furniture</div>
-              <div className="brand-line secondary">KaoKai</div>
-            </div>
-          </div>
+    {/* ใช้โลโก้จาก public/images */}
+    <img
+      className="photo-left"
+      src="/images/logo-login-kaokai.png"
+      alt="KaoKai Furniture"
+      loading="eager"
+      decoding="async"
+    />
+  </div>
         </div>
         <div className="forgot-password-right">
           <h1>ลืมรหัสผ่าน</h1>
-          <p className="forgot-password-description">
-            กรุณากรอกอีเมลของคุณ เราจะส่งลิงก์รีเซ็ตรหัสผ่านให้
-          </p>
           
           <form onSubmit={onSubmit} className="forgot-password-form">
-            <label>อีเมล์ผู้ใช้งาน</label>
+            <label>กรอกอีเมล์ที่ลงทะเบียนไว้</label>
             <input 
               type="email" 
               placeholder="อีเมล์ผู้ใช้งาน" 
@@ -56,12 +56,14 @@ export default function ForgotPassword() {
             {message && <div className="success">{message}</div>}
             
             <button className="btn-forgot-password" type="submit" disabled={loading}>
-              {loading ? 'กำลังส่ง...' : 'ส่งลิงก์รีเซ็ตรหัสผ่าน'}
+              {loading ? 'กำลังส่ง...' : 'ดำเนินการต่อ'}
             </button>
             
             <div className="back-to-login">
-              <a href="/login">กลับไปหน้าเข้าสู่ระบบ</a>
-            </div>
+  <span className="back-label">กลับไปยังหน้า</span>
+  <a className="back-link" href="/login">เข้าสู่ระบบ</a>
+</div>
+
           </form>
         </div>
       </div>

@@ -7,18 +7,21 @@ const Footer = () => {
     <footer className="footer">
       <div className="container">
         <div className="footer-content">
+          {/* BRAND + CONTACT */}
           <div className="footer-section">
-            <div className="footer-logo">
-              <div className="logo-icon">K</div>
-              <span className="logo-text">KaokaiOfficeFurniture</span>
-            </div>
-            <div className="contact-info">
-              <p><i className="fas fa-map-marker-alt"></i> ที่อยู่: 123 ถนนสุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพฯ 10110</p>
-              <p><i className="fas fa-phone"></i> เบอร์: 096-399-1916, 096-389-1916</p>
-              <p><i className="fas fa-envelope"></i> อีเมล์: info@koknoioffice.com</p>
-            </div>
+            <Link to="/" className="footer-logo" aria-label="Kaokai Office Furniture - home">
+              <img
+                src="/images/kaokai-logo-footer.png"        // ไฟล์อยู่ใน public
+                alt="Kaokai Office Furniture"
+                className="footer-logo-img"
+              />
+            </Link>
+
+
+
           </div>
 
+          {/* HELP */}
           <div className="footer-section">
             <h3>ช่วยเหลือ</h3>
             <ul>
@@ -28,25 +31,28 @@ const Footer = () => {
             </ul>
           </div>
 
+          {/* POLICY */}
           <div className="footer-section">
             <h3>นโยบาย</h3>
             <ul>
               <li><Link to="/shipping">การส่งสินค้า</Link></li>
-              <li><Link to="/privacy">เอกสารการผลิตข้อมูล</Link></li>
+              <li><Link to="/privacy">เอกสารการแจ้งข้อมูล</Link></li>
               <li><Link to="/terms">เงื่อนไขการใช้งาน</Link></li>
             </ul>
           </div>
 
+          {/* ABOUT */}
           <div className="footer-section">
             <h3>เกี่ยวกับเรา</h3>
             <ul>
               <li><Link to="/careers">สมัครงาน</Link></li>
-              <li><Link to="/history">ประวัติเรา</Link></li>
+              <li><Link to="/contact">ติดต่อเรา</Link></li>
             </ul>
           </div>
         </div>
 
-        <div className="footer-bottom">
+        {/* หมายเหตุ: ซ่อนส่วนล่างเพื่อให้เหมือนภาพตัวอย่าง */}
+        <div className="footer-bottom" aria-hidden="true">
           <p>&copy; 2024 KaokaiOfficeFurniture. สงวนลิขสิทธิ์.</p>
         </div>
       </div>
@@ -54,4 +60,4 @@ const Footer = () => {
   );
 };
 
-export default Footer; 
+export default Footer;

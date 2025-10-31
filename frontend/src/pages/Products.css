@@ -30,6 +30,7 @@
   transition: transform 0.3s ease;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .product-card:hover {
@@ -62,8 +63,15 @@
   border-top: 1px solid #f0f0f0;
 }
 
-.product-image {
+.product-image-container {
+  position: relative;
   height: 250px;
+  overflow: hidden;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -72,6 +80,7 @@
   height: 100%;
   object-fit: cover;
 }
+
 
 .product-info {
   padding: 20px;
@@ -372,3 +381,158 @@
     gap: 15px;
   }
 } 
+
+/* การ์ดให้เหมือนภาพ: ขอบบาง โค้ง เบา ๆ ไม่มีเงา */
+.product-card{
+  background:#fff;
+  border:1px solid #cfcfcf;
+  border-radius:14px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  transition:border-color .2s;
+  box-shadow:none;             /* ปิดเงา */
+}
+.product-card:hover{
+  border-color:#bdbdbd;
+  transform:none;              /* ไม่เด้งขึ้น */
+}
+
+/* ภาพสินค้า: ปรับขนาดและการแสดงผลให้เหมาะสม */
+.product-image {
+  height: 280px;  /* เพิ่มความสูงให้มากขึ้น */
+  padding: 20px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.product-image img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;    /* ให้รูปคงอัตราส่วนเดิม */
+  height: auto;   /* ให้รูปคงอัตราส่วนเดิม */
+  object-fit: contain;
+  object-position: center;
+}
+
+/* ข้อความในการ์ด */
+.product-info{ padding:14px 16px; }
+.product-info h3{
+  font-size:1rem;
+  margin:0 0 6px;
+  color:#222;
+  font-weight:600;
+  line-height:1.35;
+}
+.product-model{
+  color:#666;
+  font-size:.9rem;
+  margin:0 0 10px;
+}
+.product-price{
+  font-size:1rem;
+  font-weight:700;
+  color:#000;                  /* สีดำตามภาพ */
+  margin:0;
+}
+
+/* ปุ่ม/แอ็กชันท้ายการ์ดเอาออกในมุมมองนี้ (ถ้ามี) */
+.product-actions{ display:none; }
+
+/* กล่องฟิลเตอร์และ sort ให้คล้ายภาพ: เส้นขอบอ่อน พื้นขาว */
+.filter-sort-container{
+  margin-bottom:22px;
+  padding:10px 12px;
+  background:#fff;
+  border:1px solid #dcdcdc;
+  border-radius:12px;
+}
+
+/* หมวดหมู่เป็น pill เล็ก ๆ */
+.category-option{
+  padding:6px 12px;
+  border:1px solid #d0d0d0;
+  border-radius:20px;
+  background:#fff;
+  font-weight:500;
+}
+.category-option.selected{
+  background:#111;
+  border-color:#111;
+  color:#fff;
+}
+
+/* ดรอปดาวน์เรียงตามเป็นเม็ดยา */
+.sort-dropdown{
+  padding:8px 12px;
+  border:1px solid #d0d0d0;
+  border-radius:20px;
+  background:#fff;
+  min-width:auto;
+}
+
+/* เพจจิเนชันตัวเลขมีเส้นใต้เฉพาะหน้าปัจจุบัน */
+.pagination{
+  margin-top:26px;
+  gap:12px;
+}
+.pagination-info{ display:none; }       /* ซ่อนข้อความ “แสดง x–y” ให้เหมือนภาพ */
+.pagination-controls{ gap:14px; }
+.pagination-btn{
+  border:none;
+  background:transparent;
+  padding:4px 2px;
+  min-width:auto;
+  font-size:18px;
+  font-weight:600;
+  color:#444;
+  border-radius:0;
+  transition:color .15s;
+}
+.pagination-btn:hover{ color:#000; transform:none; }
+.pagination-btn.active{
+  color:#000;
+  border-bottom:3px solid #000; /* เส้นใต้หนา */
+  box-shadow:none;
+}
+
+/* ========== Pagination: no red background anywhere ========== */
+.pagination-controls { gap: 14px; }
+
+.pagination-btn{
+  background: transparent !important;   /* กันทุกกรณี */
+  border: none !important;
+  padding: 4px 2px;
+  min-width: auto;
+  font-size: 18px;
+  font-weight: 600;
+  color: #444;
+  border-radius: 0;
+  transition: color .15s;
+}
+
+.pagination-btn:hover{
+  color: #000;
+  background: transparent;              /* ไม่มีพื้นหลัง */
+}
+
+.pagination-btn.active{
+  color: #000;
+  background: transparent !important;   /* ย้ำไม่ให้แดง */
+  position: relative;
+}
+
+/* เส้นใต้ดำแบบในรูป */
+.pagination-btn.active::after{
+  content: "";
+  display: block;
+  width: 100%;
+  height: 4px;
+  background: #000;
+  margin: 4px auto 0;
+  border-radius: 2px;
+}
+

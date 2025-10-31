@@ -12,19 +12,33 @@ const ProductDetail = () => {
   const [addingToCart, setAddingToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [addingToFavorites, setAddingToFavorites] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
 
-  // ฟังก์ชันสำหรับดึงรูปภาพจากโฟลเดอร์ local
-  const getProductImage = (productId) => {
-    const imageNumber = ((productId - 1) % 4) + 1;
-    return `/images/products/product${imageNumber}.jpg`;
+  // ฟังก์ชันสำหรับดึงรูปภาพ: ให้ใช้รหัสสินค้า (model) เป็นไฟล์รูปหลัก
+  const getProductImage = (product) => {
+    if (!product) return '/images/NoImage.png';
+
+    // ถ้ามี model ให้ใช้ชื่อไฟล์จาก model (เช่น KEL-152.jpg)
+    if (product.model) {
+      return `/images/products/${product.model}.jpg`;
+    }
+
+    // ถ้าไม่มี model แต่มีฟิลด์ image อยู่ ให้ fallback ไปที่ field นั้น
+    if (product.image) {
+      if (product.image.startsWith('http')) return product.image;
+      return `/images/products/${product.image}`;
+    }
+
+    // ค่าเริ่มต้น
+    return '/images/NoImage.png';
   };
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/products/${id}`);
+        const response = await axios.get(`http://localhost:5050/api/products/${id}`);
         setProduct(response.data);
       } catch (err) {
         setError('ไม่พบสินค้า');
@@ -34,24 +48,67 @@ const ProductDetail = () => {
       }
     };
 
+    const checkFavorite = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          const response = await axios.get(`http://localhost:5050/api/favorites/${id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setIsFavorite(response.data.isFavorite);
+        }
+      } catch (error) {
+        console.error('Error checking favorite:', error);
+      }
+    };
+
     fetchProduct();
+    checkFavorite();
   }, [id]);
 
   const addToCart = async () => {
+    // ตรวจสอบการล็อกอินก่อนเพิ่มลงตะกร้า
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setNotificationMessage('กรุณาเข้าสู่ระบบก่อนเพิ่มสินค้าลงตะกร้า');
+      setShowNotification(true);
+      setTimeout(() => setShowNotification(false), 3000);
+      return;
+    }
+
+    // ตรวจสอบ stock ก่อนเพิ่มลงตะกร้า
+    if (product.stock <= 0) {
+      setNotificationMessage(`สินค้า "${product.name}" หมดสต็อกแล้ว`);
+      setShowNotification(true);
+      setTimeout(() => setShowNotification(false), 3000);
+      return;
+    }
+
+    if (product.stock < quantity) {
+      setNotificationMessage(`สินค้า "${product.name}" เหลือเพียง ${product.stock} ชิ้น`);
+      setShowNotification(true);
+      setTimeout(() => setShowNotification(false), 3000);
+      return;
+    }
+
     setAddingToCart(true);
     try {
-      for (let i = 0; i < quantity; i++) {
-        await axios.post('http://localhost:5000/api/cart', {
-          productId: product.id,
-          quantity: 1
-        });
-      }
+      await axios.post('http://localhost:5050/api/cart', {
+        productId: product.id,
+        quantity: quantity
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setNotificationMessage(`เพิ่ม "${product.name}" จำนวน ${quantity} ชิ้นลงตะกร้าเรียบร้อยแล้ว`);
       setShowNotification(true);
       setTimeout(() => setShowNotification(false), 3000);
+      
+      // ส่ง event เพื่ออัพเดทจำนวนสินค้าใน Header
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
     } catch (error) {
       console.error('Error adding to cart:', error);
-      setNotificationMessage('เกิดข้อผิดพลาดในการเพิ่มสินค้าลงตะกร้า');
+      const errorMessage = error.response?.data?.message || 'เกิดข้อผิดพลาดในการเพิ่มสินค้าลงตะกร้า';
+      setNotificationMessage(errorMessage);
       setShowNotification(true);
       setTimeout(() => setShowNotification(false), 3000);
     } finally {
@@ -59,12 +116,47 @@ const ProductDetail = () => {
     }
   };
 
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    setNotificationMessage(isFavorite ? 'ลบออกจากรายการโปรดแล้ว' : 'เพิ่มในรายการโปรดแล้ว');
-    setShowNotification(true);
-    setTimeout(() => setShowNotification(false), 2000);
+  const toggleFavorite = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setNotificationMessage('กรุณาเข้าสู่ระบบเพื่อเพิ่มสินค้าเข้ารายการโปรด');
+      setShowNotification(true);
+      setTimeout(() => setShowNotification(false), 3000);
+      return;
+    }
+
+    setAddingToFavorites(true);
+
+    try {
+      if (isFavorite) {
+        // ลบออกจาก favorites
+        await axios.delete(`http://localhost:5050/api/favorites/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setIsFavorite(false);
+        setNotificationMessage(`ลบ "${product.name}" ออกจากรายการโปรดแล้ว`);
+      } else {
+        // เพิ่มเข้า favorites
+        await axios.post('http://localhost:5050/api/favorites', {
+          productId: id
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setIsFavorite(true);
+        setNotificationMessage(`เพิ่ม "${product.name}" เข้ารายการโปรดแล้ว`);
+      }
+      setShowNotification(true);
+      setTimeout(() => setShowNotification(false), 3000);
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      setNotificationMessage('เกิดข้อผิดพลาดในการจัดการรายการโปรด');
+      setShowNotification(true);
+      setTimeout(() => setShowNotification(false), 3000);
+    } finally {
+      setAddingToFavorites(false);
+    }
   };
+
 
 
   if (loading) {
@@ -102,11 +194,13 @@ const ProductDetail = () => {
               <button 
                 className={`favorite-button ${isFavorite ? 'active' : ''}`}
                 onClick={toggleFavorite}
+                disabled={addingToFavorites}
+                title={isFavorite ? 'ลบออกจากรายการโปรด' : 'เพิ่มเข้ารายการโปรด'}
               >
-                <i className={isFavorite ? 'fas fa-heart' : 'far fa-heart'}></i>
+                {addingToFavorites ? '...' : (isFavorite ? '❤️' : '🤍')}
               </button>
               <img 
-                src={getProductImage(product.id)} 
+                src={getProductImage(product)} 
                 alt={product.name}
                 onError={(e) => {
                   e.target.src = '/images/NoImage.png';
@@ -126,6 +220,14 @@ const ProductDetail = () => {
               <span className="current-price">{product.price.toLocaleString()} บาท</span>
             </div>
 
+            <div className="product-stock">
+              <span className={`stock-info ${product.stock <= 0 ? 'out-of-stock' : product.stock <= 5 ? 'low-stock' : 'in-stock'}`}>
+                {product.stock <= 0 ? 'หมดสต็อก' : 
+                 product.stock <= 5 ? `เหลือเพียง ${product.stock} ชิ้น` : 
+                 `มีสินค้า ${product.stock} ชิ้น`}
+              </span>
+            </div>
+
             <div className="quantity-selector">
               <div className="quantity-controls">
                 <button 
@@ -136,8 +238,8 @@ const ProductDetail = () => {
                 </button>
                 <span className="quantity">{quantity}</span>
                 <button 
-                  onClick={() => setQuantity(Math.min(10, quantity + 1))}
-                  disabled={quantity >= 10}
+                  onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                  disabled={quantity >= product.stock}
                 >
                   +
                 </button>
@@ -148,9 +250,10 @@ const ProductDetail = () => {
               <button 
                 className="btn btn-primary add-to-cart"
                 onClick={addToCart}
-                disabled={addingToCart}
+                disabled={addingToCart || product.stock <= 0}
               >
-                {addingToCart ? 'กำลังเพิ่ม...' : 'เพิ่มใส่รถเข็น'}
+                {product.stock <= 0 ? 'หมดสต็อก' : 
+                 addingToCart ? 'กำลังเพิ่ม...' : 'เพิ่มใส่รถเข็น'}
               </button>
             </div>
           </div>

@@ -275,13 +275,13 @@
 
 .empty-state {
   text-align: center;
-  padding: 40px 20px;
+  padding: 10px 20px;
   color: #666;
 }
 
 .empty-state p {
-  font-size: 14px;
-  margin: 8px 0;
+  font-size: 18px;
+  margin: 10px 0;
 }
 
 /* Responsive Design */
@@ -339,4 +339,498 @@
   .content-section h2 {
     font-size: 20px;
   }
+}
+
+/* ===== Sidebar look like screenshot ===== */
+.profile-sidebar{
+  border: 1px solid #e6e6e6;     /* ขอบอ่อน */
+  border-radius: 16px;           /* มุมโค้งมากขึ้น */
+  box-shadow: none;              /* ไม่ต้องมีเงาหนัก */
+  padding: 18px;
+}
+
+/* แถวไอคอน + ชื่อให้เรียงแนวนอน */
+.user-info{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  margin-bottom: 18px;            /* ช่องไฟเล็กน้อย */
+  padding-bottom: 0;
+  border-bottom: none;           /* ไม่ต้องมีเส้นคั่นตรงหัว */
+}
+
+.user-avatar{
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #111;              /* วงกลมดำตามภาพ */
+  color: #fff;
+  font-size: 28px;
+  flex: 0 0 35px;
+  margin: 0;
+}
+
+.user-info h3{
+  font-size: 18px;               /* ชื่อใหญ่ชัด */
+  font-weight: 700;
+  color: #111;
+}
+
+/* เมนูรายการแนวตั้งแบบมีเส้นคั่น */
+.profile-nav{
+  margin-top: 8px;
+  border-top: 1px solid #ededed;
+}
+
+.nav-item{
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: center;            /* จัดกลางเหมือนภาพ */
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+  padding: 16px 8px;
+  border-bottom: 1px solid #ededed;  /* เส้นคั่นแต่ละบรรทัด */
+  transition: color .15s;
+}
+
+.nav-item:hover{
+  background: transparent;
+  color: #d23;                   /* โฮเวอร์แดงอ่อน ๆ */
+}
+
+/* สถานะที่เลือก: ตัวอักษรแดง ไม่มีพื้นหลัง/เส้นด้านซ้าย */
+.nav-item.active{
+  color: #d23;                   /* #d23 = แดงสุภาพ */
+  background: transparent;
+  border-left: none;
+  padding-left: 8px;             /* คืนค่าเดิม */
+}
+
+/* ปุ่มแก้ไข/ออกจากระบบด้านล่างไม่เปลี่ยน */
+
+/* Readonly Input Styles */
+.readonly-input {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  cursor: not-allowed;
+  border: 2px solid #e9ecef;
+}
+
+.readonly-input:focus {
+  outline: none;
+  border-color: #e9ecef;
+  box-shadow: none;
+}
+
+/* Error Message Styles */
+.error-message {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+.form-group input.error {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-group input.error:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Order Item Styles */
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+}
+
+.order-item:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.order-info h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.order-info p {
+  margin: 5px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.order-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-view-details {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-view-details:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+/* Province Dropdown Styles */
+.province-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.province-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+  background: white;
+}
+
+.province-input:focus {
+  outline: none;
+  border-color: #dc3545;
+}
+
+.province-dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 2px solid #e9ecef;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.province-option {
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.province-option:hover {
+  background-color: #f8f9fa;
+}
+
+.province-option:last-child {
+  border-bottom: none;
+}
+
+/* Responsive Design for Province Dropdown */
+@media (max-width: 768px) {
+  .province-dropdown-list {
+    max-height: 150px;
+  }
+  
+  .province-option {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+}
+
+/* ===== Favorites grid & card ===== */
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  max-width: 100%;
+}
+
+/* การ์ดสินค้าแนวตั้ง (เหมือนในรูปภาพ) */
+.favorite-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+  padding: 0;
+  cursor: pointer;
+  transition: box-shadow .2s ease, transform .05s ease;
+  outline: none;
+  overflow: hidden;
+  width: 100%;
+  max-width: 300px;
+}
+
+.favorite-card:hover {
+  box-shadow: 0 4px 14px rgba(0,0,0,.08);
+  transform: translateY(-1px);
+}
+
+.favorite-card:focus {
+  box-shadow: 0 0 0 3px rgba(220,53,69,.25);
+}
+
+/* กล่องรูป (ด้านบน) */
+.favorite-thumb {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e6e6e6;
+  padding: 16px;
+}
+
+.favorite-thumb img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* ข้อมูลด้านล่าง */
+.favorite-info {
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.favorite-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.favorite-code {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  font-weight: 500;
+}
+
+.favorite-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+  margin-top: 4px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .favorites-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+  }
+  
+  .favorite-card {
+    max-width: 100%;
+  }
+  
+  .favorite-thumb {
+    height: 180px;
+  }
+}
+
+/* จัด empty state ให้อยู่กลางกล่อง Favorites */
+.favorites-grid .empty-state {
+  /* ให้กินทั้งความกว้างของกริด */
+  grid-column: 1 / -1;
+
+  /* จัดกึ่งกลางทั้งแกน X/Y */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* ความสูงขั้นต่ำ เพื่อให้ดูอยู่กลางกล่องชัดเจน */
+  min-height: 320px;
+
+  /* ลุค & ระยะขอบ */
+  text-align: center;
+  margin: 0 auto;
+  padding: 0;
+  font-size: 18px;
+  color: #666;
+}
+
+/* ===== Orders: card & layout (สบายตา) ===== */
+.orders-list {
+  display: grid;
+  gap: 14px;
+  max-width: 760px;           /* คุมความกว้างให้อ่านง่าย */
+}
+
+/* การ์ดคำสั่งซื้อ */
+.order-item {
+  display: grid;
+  grid-template-columns: 1fr auto;   /* ข้อมูล | ปุ่ม */
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  border: 1px solid #eceff3;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(17, 24, 39, 0.04);
+  transition: border-color .15s ease, box-shadow .15s ease, transform .05s ease;
+}
+
+.order-item:hover {
+  border-color: #e5e7eb;
+  box-shadow: 0 8px 28px rgba(17,24,39,.08);
+  transform: translateY(-1px);
+}
+
+/* หัวข้อ + เมตา */
+.order-info h4 {
+  margin: 0 0 8px 0;
+  color: #111827;             /* gray-900 */
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+
+.order-info p {
+  margin: 4px 0;
+  color: #475569;             /* slate-600 */
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* บรรทัดวันที่ */
+.order-info p:nth-of-type(1) { /* "วันที่:" */
+  color: #64748b;             /* slate-500 */
+}
+
+/* บรรทัดสถานะ (ทำเป็นแถบ badge แบบอ่อน) */
+.order-info p:nth-of-type(2) { /* "สถานะ:" */
+  display: inline-block;
+  background: #f8fafc;        /* อ่อน สบายตา */
+  border: 1px solid #e5e7eb;
+  color: #0f172a;             /* slate-900 */
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  margin: 6px 0;
+}
+
+/* บรรทัดยอดรวม */
+.order-info p:nth-of-type(3) { /* "ยอดรวม:" */
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* ปุ่มด้านขวา */
+.order-actions {
+  display: flex;
+  gap: 10px;
+  align-self: center;
+}
+
+.btn-view-details {
+  appearance: none;
+  background: #fff;
+  color: #dc3545;               /* โทนหลักของโปรเจกต์ */
+  border: 1px solid #f1d4d7;    /* ขอบแดงอ่อน */
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease, transform .05s ease, box-shadow .15s ease;
+}
+
+.btn-view-details:hover {
+  background: #dc3545;
+  color: #fff;
+  border-color: #dc3545;
+  box-shadow: 0 6px 18px rgba(220,53,69,.25);
+  transform: translateY(-1px);
+}
+
+/* ===== Orders: Empty state (แบบเดียวกับ Favorites) ===== */
+.orders-list .empty-state{
+  grid-column: 1 / -1;
+
+  /* จัดให้อยู่กลางกล่อง */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* ขนาดพื้นที่พอดีสายตา */
+  min-height: 320px;
+
+  /* ลุคโปร่ง สบายตา */
+  background: transparent;
+  border: none;           /* <- เอาเส้นปะออก */
+  box-shadow: none;
+  margin: 0;
+  padding: 0;
+
+  /* ตัวอักษรให้เหมือน Favorites */
+  color: #666;
+  font-size: 18px;
+  text-align: center;
+}
+
+.orders-list .empty-state p{
+  margin: 0;
+}
+
+
+/* เส้นแบ่งระหว่างการ์ด (ถ้าต้องการ) */
+/*
+.orders-list::before {
+  content: "";
+  display: block;
+  border-top: 2px solid #f1f5f9;
+  margin: 4px 0 6px;
+}
+*/
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  .order-item {
+    grid-template-columns: 1fr;     /* ซ้อนกันในจอเล็ก */
+    gap: 12px;
+    padding: 16px;
+  }
+  .order-actions {
+    justify-content: flex-start;    /* ปุ่มไปชิดซ้าย ดูเป็นธรรมชาติ */
+  }
+  .btn-view-details {
+    width: 100%;                    /* แตะง่ายในมือถือ */
+  }
+  .order-info h4 { font-size: 16px; }
+  .order-info p { font-size: 13px; }
 }

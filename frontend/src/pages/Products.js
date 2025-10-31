@@ -7,23 +7,24 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [addingToCart, setAddingToCart] = useState({});
-  const [notification, setNotification] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [sortBy, setSortBy] = useState('recommended');
   const itemsPerPage = 16;
 
-  // ฟังก์ชันสำหรับดึงรูปภาพจากโฟลเดอร์ local
-  const getProductImage = (productId) => {
-    const imageNumber = ((productId - 1) % 4) + 1;
-    return `/images/products/product${imageNumber}.jpg`;
+  // ฟังก์ชันสำหรับดึงรูปภาพจากโฟลเดอร์ public/images/products
+  const getProductImage = (product) => {
+    if (product.model) {
+      // ใช้รหัสสินค้า (model) เป็นชื่อไฟล์รูป .jpg
+      return `/images/products/${product.model}.jpg`;
+    }
+    return '';
   };
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/products');
+        const response = await axios.get('http://localhost:5050/api/products');
         setProducts(response.data);
         setFilteredProducts(response.data);
       } catch (error) {
@@ -77,33 +78,7 @@ const Products = () => {
   // Get unique categories
   const categories = [...new Set(products.map(product => product.category))];
 
-  const addToCart = async (productId, productName) => {
-    setAddingToCart(prev => ({ ...prev, [productId]: true }));
-    
-    try {
-      await axios.post('http://localhost:5000/api/cart', {
-        productId: productId,
-        quantity: 1
-      });
-      
-      setNotification({
-        type: 'success',
-        message: `เพิ่ม "${productName}" ลงตะกร้าเรียบร้อยแล้ว`
-      });
-      
-      // Hide notification after 3 seconds
-      setTimeout(() => setNotification(null), 3000);
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      setNotification({
-        type: 'error',
-        message: 'เกิดข้อผิดพลาดในการเพิ่มสินค้าลงตะกร้า'
-      });
-      setTimeout(() => setNotification(null), 3000);
-    } finally {
-      setAddingToCart(prev => ({ ...prev, [productId]: false }));
-    }
-  };
+
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -121,16 +96,19 @@ const Products = () => {
     );
   }
 
+  // ด้านบน component
+const formatPrice = (n) =>
+  `${Number(n).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })} ฿ THB`;
+
+
   return (
     <div className="products-page">
       <div className="container">
         <h1>สินค้าทั้งหมด</h1>
         
-        {notification && (
-          <div className={`notification ${notification.type}`}>
-            {notification.message}
-          </div>
-        )}
 
         {/* Filter and Sort Controls */}
         <div className="filter-sort-container">
@@ -188,30 +166,20 @@ const Products = () => {
             <div key={product.id} className="product-card">
               <Link to={`/product/${product.id}`} className="product-link">
                 <div className="product-image">
-                  <img 
-                    src={getProductImage(product.id)} 
-                    alt={product.name}
-                    onError={(e) => {
-                      e.target.src = '/images/NoImage.png';
-                    }}
-                  />
+                  {getProductImage(product) && (
+                    <img 
+                      src={getProductImage(product)} 
+                      alt={product.name}
+                    />
+                  )}
                 </div>
                 <div className="product-info">
-                  <h3>{product.name}</h3>
-                  <p className="product-model">รุ่น: {product.model}</p>
-                  <p className="product-category">{product.category}</p>
-                  <p className="product-price">{product.price.toLocaleString()} บาท</p>
-                </div>
+  <h3>{product.name}</h3>
+  <p className="product-model">{product.model}</p>
+  <p className="product-price">{formatPrice(product.price)}</p>
+</div>
+
               </Link>
-              <div className="product-actions">
-                <button 
-                  className="btn btn-primary"
-                  onClick={() => addToCart(product.id, product.name)}
-                  disabled={addingToCart[product.id]}
-                >
-                  {addingToCart[product.id] ? 'กำลังเพิ่ม...' : 'เพิ่มลงตะกร้า'}
-                </button>
-              </div>
             </div>
           ))}
         </div>

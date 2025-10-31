@@ -1,0 +1,363 @@
+.success-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px 0;
+}
+
+.success-page .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.success-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.success-header h1 {
+  color: #2c3e50;
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.success-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.success-left {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.success-right {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Progress Steps */
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.progress-steps::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background-color: #28a745;
+  z-index: 1;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  background: white;
+  padding: 10px;
+}
+
+.step.completed {
+  color: #28a745;
+}
+
+.step i {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #28a745;
+  color: white;
+}
+
+.step span {
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Success Message */
+.success-message {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #d4edda;
+  border-radius: 10px;
+  border: 1px solid #c3e6cb;
+}
+
+.success-icon {
+  margin-bottom: 20px;
+}
+
+.success-icon i {
+  font-size: 4rem;
+  color: #28a745;
+}
+
+.success-message h2 {
+  color: #28a745;
+  margin-bottom: 15px;
+  font-size: 1.8rem;
+}
+
+.success-message p {
+  margin-bottom: 10px;
+  color: #155724;
+}
+
+
+/* Customer Info */
+.customer-info {
+  margin-bottom: 30px;
+}
+
+.customer-info h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.customer-details p {
+  margin-bottom: 8px;
+  color: #495057;
+}
+
+/* Delivery Info */
+.delivery-info {
+  margin-bottom: 30px;
+}
+
+.delivery-info h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.delivery-details p {
+  margin-bottom: 8px;
+  color: #495057;
+}
+
+/* Invoice Info */
+.invoice-info {
+  margin-bottom: 30px;
+}
+
+.invoice-info h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.invoice-details p {
+  margin-bottom: 8px;
+  color: #495057;
+}
+
+/* Success Actions */
+.document-download {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.document-download h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.download-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.download-buttons .btn {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: white;
+  border: 2px solid #007bff;
+  color: #007bff;
+}
+
+.download-buttons .btn:hover {
+  background-color: #007bff;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.download-buttons .btn i {
+  font-size: 1.2rem;
+}
+
+.success-actions {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.success-actions .btn {
+  flex: 1;
+  min-width: 150px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.success-actions .btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.success-actions .btn-primary:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.success-actions .btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.success-actions .btn-secondary:hover {
+  background-color: #545b62;
+  transform: translateY(-2px);
+}
+
+/* Loading and Error States */
+.loading-container, .error-container {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.loading-container i, .error-container i {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: #007bff;
+}
+
+.error-container i {
+  color: #dc3545;
+}
+
+.loading-container span, .error-container p {
+  font-size: 1.2rem;
+  color: #6c757d;
+  margin-bottom: 20px;
+}
+
+.error-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.error-actions .btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.error-actions .btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.error-actions .btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.error-actions .btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.error-actions .btn-secondary:hover {
+  background-color: #545b62;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .success-content {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .success-left, .success-right {
+    padding: 20px;
+  }
+  
+  .progress-steps {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .progress-steps::before {
+    display: none;
+  }
+  
+  .step {
+    flex-direction: row;
+    text-align: left;
+  }
+  
+  .step i {
+    margin-right: 15px;
+    margin-bottom: 0;
+  }
+  
+  .success-actions {
+    flex-direction: column;
+  }
+  
+  .success-actions .btn {
+    flex: none;
+  }
+}

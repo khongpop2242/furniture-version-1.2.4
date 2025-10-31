@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Cart.css';
 
 const Cart = () => {
+  const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [creatingPayment, setCreatingPayment] = useState(false);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [paymentInfo, setPaymentInfo] = useState(null); // { paymentIntentId, qrPng, status }
   const [paymentStatus, setPaymentStatus] = useState('requires_payment_method');
@@ -14,7 +15,15 @@ const Cart = () => {
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/cart');
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+
+        const response = await axios.get('http://localhost:5050/api/cart', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         setCartItems(response.data);
       } catch (error) {
         console.error('Error fetching cart:', error);
@@ -26,42 +35,97 @@ const Cart = () => {
     fetchCart();
   }, []);
 
-  const updateQuantity = async (productId, newQuantity) => {
+  const updateQuantity = async (cartItemId, newQuantity) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      // Find the cart item to get productId
+      const cartItem = cartItems.find(item => item.id === cartItemId);
+      if (!cartItem) return;
+
       if (newQuantity < 1) {
-        await axios.delete(`http://localhost:5000/api/cart/${productId}`);
+        await axios.delete(`http://localhost:5050/api/cart/${cartItem.productId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
       } else {
-        await axios.put(`http://localhost:5000/api/cart/${productId}`, { quantity: newQuantity });
+        // ตรวจสอบ stock ก่อนอัปเดต
+        if (cartItem.product.stock && newQuantity > cartItem.product.stock) {
+          alert(`สินค้าเหลือเพียง ${cartItem.product.stock} ชิ้น`);
+          return;
+        }
+
+        await axios.put(`http://localhost:5050/api/cart/${cartItem.productId}`, 
+          { quantity: newQuantity },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
       }
-      const response = await axios.get('http://localhost:5000/api/cart');
+      const response = await axios.get('http://localhost:5050/api/cart', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setCartItems(response.data);
+      
+      // ส่ง event เพื่ออัพเดทจำนวนสินค้าใน Header
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
     } catch (e) {
       console.error('Error updating cart quantity:', e);
+      // แสดงข้อความ error จาก server
+      if (e.response && e.response.data && e.response.data.message) {
+        alert(e.response.data.message);
+      }
     }
   };
 
-  const removeItem = async (productId) => {
+  const removeItem = async (cartItemId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/cart/${productId}`);
-      const response = await axios.get('http://localhost:5000/api/cart');
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      // Find the cart item to get productId
+      const cartItem = cartItems.find(item => item.id === cartItemId);
+      if (!cartItem) return;
+
+      await axios.delete(`http://localhost:5050/api/cart/${cartItem.productId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const response = await axios.get('http://localhost:5050/api/cart', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setCartItems(response.data);
+      
+      // ส่ง event เพื่ออัพเดทจำนวนสินค้าใน Header
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
     } catch (e) {
       console.error('Error removing item from cart:', e);
     }
   };
 
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
   };
 
   const getTotalItems = () => {
     return cartItems.reduce((total, item) => total + item.quantity, 0);
   };
 
-  const printQuotation = () => {
+  const printQuotation = async () => {
     const printWindow = window.open('', '_blank');
     const currentDate = new Date().toLocaleDateString('th-TH');
     const quotationNumber = 'QT-' + Date.now().toString().slice(-6);
+    
+    // ดึงข้อมูลผู้ใช้ที่ล็อกอินอยู่
+    let userData = null;
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const response = await axios.get('http://localhost:5050/api/auth/me', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        userData = response.data;
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
     
     const quotationHTML = `
       <!DOCTYPE html>
@@ -181,6 +245,13 @@ const Cart = () => {
             <p>อีเมล: info@furniture-office.com</p>
           </div>
           <div class="info-section">
+            <h3>ข้อมูลลูกค้า</h3>
+            <p><strong>ชื่อ:</strong> ${userData ? userData.name : 'ไม่ระบุ'}</p>
+            <p><strong>อีเมล:</strong> ${userData ? userData.email : 'ไม่ระบุ'}</p>
+            <p><strong>โทรศัพท์:</strong> ${userData ? userData.phone || 'ไม่ระบุ' : 'ไม่ระบุ'}</p>
+            <p><strong>ที่อยู่:</strong> ${userData ? userData.address || 'ไม่ระบุ' : 'ไม่ระบุ'}</p>
+          </div>
+          <div class="info-section">
             <h3>ข้อมูลใบเสนอราคา</h3>
             <p><strong>เลขที่:</strong> ${quotationNumber}</p>
             <p><strong>วันที่:</strong> ${currentDate}</p>
@@ -203,11 +274,11 @@ const Cart = () => {
             ${cartItems.map((item, index) => `
               <tr>
                 <td>${index + 1}</td>
-                <td>${item.name}</td>
-                <td>${item.model || '-'}</td>
+                <td>${item.product.name}</td>
+                <td>${item.product.model || '-'}</td>
                 <td>${item.quantity}</td>
-                <td>${item.price.toLocaleString()} บาท</td>
-                <td>${(item.price * item.quantity).toLocaleString()} บาท</td>
+                <td>${item.product.price.toLocaleString()} บาท</td>
+                <td>${(item.product.price * item.quantity).toLocaleString()} บาท</td>
               </tr>
             `).join('')}
           </tbody>
@@ -243,6 +314,15 @@ const Cart = () => {
           <p>ขอบคุณที่ให้ความไว้วางใจ</p>
           <p style="margin-top: 30px;">ลงชื่อผู้เสนอราคา: _________________</p>
           <p>วันที่: ${currentDate}</p>
+          ${userData ? `
+          <div style="margin-top: 20px; text-align: left; border-top: 1px solid #ddd; padding-top: 20px;">
+            <h4>ข้อมูลลูกค้า:</h4>
+            <p><strong>ชื่อ:</strong> ${userData.name}</p>
+            <p><strong>อีเมล:</strong> ${userData.email}</p>
+            <p><strong>โทรศัพท์:</strong> ${userData.phone || 'ไม่ระบุ'}</p>
+            <p><strong>ที่อยู่:</strong> ${userData.address || 'ไม่ระบุ'}</p>
+          </div>
+          ` : ''}
         </div>
       </body>
       </html>
@@ -260,6 +340,7 @@ const Cart = () => {
   };
 
   // ---------- PromptPay Payment ----------
+  // eslint-disable-next-line no-unused-vars
   const extractQrFromNextAction = (nextAction) => {
     if (!nextAction) return null;
     // รองรับหลายรูปแบบของ Stripe next_action สำหรับ PromptPay
@@ -277,6 +358,7 @@ const Cart = () => {
     return null;
   };
 
+  // eslint-disable-next-line no-unused-vars
   const openPaymentModal = (info) => {
     setPaymentInfo(info);
     setPaymentStatus(info?.status || 'processing');
@@ -292,13 +374,19 @@ const Cart = () => {
     }
   };
 
+  // eslint-disable-next-line no-unused-vars
   const startPollingStatus = (paymentIntentId) => {
     if (pollTimer) clearInterval(pollTimer);
     const timer = setInterval(async () => {
       try {
-        const { data } = await axios.get(`http://localhost:5000/api/payments/${paymentIntentId}/status`);
+        const { data } = await axios.get(`http://localhost:5050/api/payments/${paymentIntentId}/status`);
         setPaymentStatus(data.status);
-        if (data.status === 'succeeded' || data.status === 'canceled' || data.status === 'requires_payment_method') {
+        if (data.status === 'succeeded') {
+          // เมื่อชำระเงินสำเร็จ ให้บันทึกคำสั่งซื้อ
+          await handleSaveOrderAfterPayment();
+          clearInterval(timer);
+          setPollTimer(null);
+        } else if (data.status === 'canceled' || data.status === 'requires_payment_method') {
           clearInterval(timer);
           setPollTimer(null);
         }
@@ -311,159 +399,201 @@ const Cart = () => {
     setPollTimer(timer);
   };
 
-  const handlePromptPayCheckout = async () => {
-    // ตรวจสอบการล็อกอินก่อนดำเนินการจ่ายเงิน
-    const token = localStorage.getItem('token');
-    if (!token) {
-      const confirmLogin = window.confirm('กรุณาเข้าสู่ระบบก่อนดำเนินการจ่ายเงิน\nต้องการไปหน้าเข้าสู่ระบบหรือไม่?');
-      if (confirmLogin) {
-        window.location.href = '/login';
-      }
-      return;
-    }
-
+  const handleSaveOrderAfterPayment = async () => {
     try {
-      if (cartItems.length === 0) return;
-      setCreatingPayment(true);
-      const amountSatang = Math.round(calculateTotal() * 100);
-      // ใช้ Stripe Checkout (Hosted) สำหรับหน้าตามรูป
-      const { data } = await axios.post('http://localhost:5000/api/checkout/create', {
-        amount: amountSatang,
-        email: 'customer@example.com'
-      });
-      if (data?.url) {
-        window.location.href = data.url;
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('กรุณาเข้าสู่ระบบก่อนบันทึกคำสั่งซื้อ');
         return;
       }
-      // fallback เดิมกรณีไม่มี url
-      const paymentCreate = await axios.post('http://localhost:5000/api/payments/create', {
-        amount: amountSatang,
-        currency: 'thb',
-        description: 'Cart checkout',
-        email: 'customer@example.com',
-        name: 'Cart Customer',
-      });
-      const qr = extractQrFromNextAction(paymentCreate.data.nextAction);
-      const qrSrc = qr ? qr.value : null;
-      const info = {
-        paymentIntentId: paymentCreate.data.paymentIntentId,
-        qrSrc,
-        status: paymentCreate.data.status,
+
+      if (cartItems.length === 0) {
+        alert('ไม่มีสินค้าในตะกร้า');
+        return;
+      }
+
+      // สร้างคำสั่งซื้อหลังจากชำระเงินสำเร็จ
+      const orderData = {
+        items: cartItems,
+        shippingAddress: 'ที่อยู่จัดส่ง (กรุณาไปแก้ไขในโปรไฟล์)'
       };
-      openPaymentModal(info);
-      startPollingStatus(paymentCreate.data.paymentIntentId);
+
+      console.log('🛒 Creating order after payment:', orderData);
+
+      const response = await axios.post('http://localhost:5050/api/orders', orderData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.data) {
+        console.log('✅ Order created successfully:', response.data.id);
+        alert('บันทึกคำสั่งซื้อสำเร็จ! หมายเลขคำสั่งซื้อ: ' + response.data.id);
+        // ล้างตะกร้าหลังบันทึกคำสั่งซื้อ
+        await axios.delete('http://localhost:5050/api/cart/clear');
+        // รีเฟรชข้อมูลตะกร้า
+        const cartResponse = await axios.get('http://localhost:5050/api/cart');
+        setCartItems(cartResponse.data);
+      }
     } catch (error) {
-      console.error('Create PromptPay payment error:', error);
-      const apiMsg = error?.response?.data?.error || error?.response?.data?.message || error?.message || 'ไม่ทราบสาเหตุ';
-      alert(`ไม่สามารถสร้างการชำระเงินได้:\n${apiMsg}`);
-    } finally {
-      setCreatingPayment(false);
+      console.error('Error saving order:', error);
+      alert('เกิดข้อผิดพลาดในการบันทึกคำสั่งซื้อ');
     }
   };
 
+
   if (loading) {
     return (
-      <div className="cart-page">
-        <div className="container">
-          <h1>ตะกร้าสินค้า</h1>
-          <div className="loading">กำลังโหลด...</div>
-        </div>
+    <div className="cart-page">
+      <div className="container">
+        <h1>ตะกร้าสินค้า({getTotalItems() || 0})</h1>
+        <div className="loading">กำลังโหลด...</div>
       </div>
-    );
+    </div>
+  );
   }
 
   if (cartItems.length === 0) {
-    return (
-      <div className="cart-page">
-        <div className="container">
-          <h1>ตะกร้าสินค้า</h1>
-          <div className="empty-cart">
-            <i className="fas fa-shopping-cart"></i>
-            <h2>ตะกร้าสินค้าว่าง</h2>
-            <p>คุณยังไม่มีสินค้าในตะกร้า</p>
-            <a href="/products" className="btn btn-primary">ไปเลือกสินค้า</a>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="cart-page">
       <div className="container">
-        <h1>ตะกร้าสินค้า</h1>
-        <div className="cart-content">
-          <div className="cart-items">
-            {cartItems.map((item) => (
-              <div key={item.id} className="cart-item">
-                <div className="item-image">
-                  <img src={item.image || 'https://via.placeholder.com/100'} alt={item.name} />
-                </div>
-                <div className="item-details">
-                  <h3>{item.name}</h3>
-                  <p className="item-price">{item.price.toLocaleString()} บาท</p>
-                </div>
-                <div className="item-quantity">
-                  <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
-                  <span>{item.quantity}</span>
-                  <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
-                </div>
-                <div className="item-total">
-                  {(item.price * item.quantity).toLocaleString()} บาท
-                </div>
-                <button 
-                  className="remove-item"
-                  onClick={() => removeItem(item.id)}
-                >
-                  <i className="fas fa-trash"></i>
-                </button>
+        {/* หัวข้อซ้ายบนตามภาพ */}
+        <h1>ตะกร้าของคุณ (0)</h1>
+
+        {/* บล็อก empty state กลางหน้า */}
+       <div className="empty-cart empty-cart--center">
+  <p className="empty-title">ไม่มีสินค้าในตะกร้าของคุณ</p>
+  <a href="/products" className="btn btn-brand btn-xl">ช้อปต่อ</a>
+</div>
+
+      </div>
+    </div>
+  );
+}
+
+
+  return (
+    <div className="cart-page">
+  <div className="container">
+    <h1>ตะกร้าสินค้า({getTotalItems() || 0})</h1>
+
+    {/* ✅ ทำ 2 คอลัมน์ในกล่องเดียวกัน */}
+    <div className="cart-content">
+      {/* LEFT */}
+      <div className="cart-left">
+        <h3 className="items-title">รายการสินค้า</h3>
+        <div className="cart-items">
+          {cartItems.map((item) => (
+            <div key={item.id} className="cart-item cart-item--boxed">
+              <button
+                className="remove-item remove-item--icon"
+                onClick={() => removeItem(item.id)}
+                aria-label="ลบสินค้าออก"
+                title="ลบสินค้าออก"
+              >
+                <i className="fas fa-trash"></i>
+              </button>
+
+              <div className="item-image">
+                <img
+                  src={item.product.model 
+                    ? `/images/products/${item.product.model}.jpg`
+                    : (item.product.image 
+                        ? (item.product.image.startsWith('http')
+                            ? item.product.image
+                            : `/images/products/${item.product.image}`)
+                        : '/images/NoImage.png')}
+                  alt={item.product.name}
+                  onError={(e) => {
+                    e.target.src = '/images/NoImage.png';
+                  }}
+                />
               </div>
-            ))}
-          </div>
-          
-          <div className="cart-summary">
-            <h2>สรุปคำสั่งซื้อ</h2>
-            <div className="summary-item">
-              <span>จำนวนสินค้า:</span>
-              <span>{getTotalItems()} ชิ้น</span>
-            </div>
-            <div className="summary-item">
-              <span>ราคารวม:</span>
-              <span>{calculateTotal().toLocaleString()} บาท</span>
-            </div>
-            <div className="summary-item">
-              <span>ค่าจัดส่ง:</span>
-              <span>ฟรี</span>
-            </div>
-            <div className="summary-total">
-              <span>ยอดรวมทั้งหมด:</span>
-              <span>{calculateTotal().toLocaleString()} บาท</span>
-            </div>
-            <div className="cart-actions">
-              {!localStorage.getItem('token') && (
-                <div className="login-required-notice">
-                  <i className="fas fa-exclamation-triangle"></i>
-                  <span>กรุณาเข้าสู่ระบบก่อนดำเนินการจ่ายเงิน</span>
+
+              <div className="item-middle">
+                <h4 className="item-title">{item.product.name}</h4>
+                <div className="item-subprice">
+                  ราคา: {item.product.price.toLocaleString()}/ตัว
                 </div>
-              )}
-              <button 
-                className={`btn btn-primary checkout-btn ${!localStorage.getItem('token') ? 'disabled' : ''}`} 
-                onClick={handlePromptPayCheckout} 
-                disabled={creatingPayment}
-                title={!localStorage.getItem('token') ? 'กรุณาเข้าสู่ระบบก่อน' : ''}
-              >
-                {creatingPayment ? 'กำลังสร้างการชำระเงิน...' : 'ชำระเงินด้วย PromptPay'}
-              </button>
-              <button 
-                className="btn btn-secondary print-quotation-btn"
-                onClick={printQuotation}
-              >
-                <i className="fas fa-print"></i> พิมพ์ใบเสนอราคา
-              </button>
+                {item.product.stock !== undefined && (
+                  <div className="item-stock">
+                    สต็อก: {item.product.stock} ชิ้น
+                  </div>
+                )}
+                <div className="item-qty-row">
+                  <span className="qty-label">จำนวน</span>
+                  <div className="item-quantity item-quantity--square">
+                    <button 
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      disabled={item.quantity <= 1}
+                    >−</button>
+                    <span className="qty-num">{item.quantity}</span>
+                    <button 
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      disabled={item.product.stock !== undefined && item.quantity >= item.product.stock}
+                    >＋</button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="item-right">
+                <div className="item-total-right">
+                  <span className="sum-label">รวม</span>&nbsp;
+                  <b>{(item.product.price * item.quantity).toLocaleString()}</b>
+                </div>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
+
+      {/* RIGHT */}
+      <aside className="cart-summary">
+        <h2>รายละเอียดการชำระเงิน</h2>
+        <div className="summary-item">
+          <span>ราคา</span>
+          <span>{calculateTotal().toLocaleString()}</span>
+        </div>
+        <div className="summary-item">
+          <span>ค่าจัดส่ง</span>
+          <span>0</span>
+        </div>
+        <div className="summary-total">
+          <span>ราคารวมสุทธิ</span>
+          <span>{calculateTotal().toLocaleString()}</span>
+        </div>
+
+        <div className="cart-actions">
+  {!localStorage.getItem('token') && (
+    <div className="login-required-notice">
+      <i className="fas fa-exclamation-triangle"></i>
+      <span>กรุณาเข้าสู่ระบบก่อนดำเนินการจ่ายเงิน</span>
+    </div>
+  )}
+
+  {/* ปุ่มแดง */}
+  <button
+    className={`btn btn-primary checkout-btn ${!localStorage.getItem('token') ? 'disabled' : ''}`}
+    onClick={() => navigate('/checkout')}
+    disabled={!localStorage.getItem('token')}
+    title={!localStorage.getItem('token') ? 'กรุณาเข้าสู่ระบบก่อน' : 'ไปหน้าสั่งซื้อ'}
+  >
+    ดำเนินการต่อ
+  </button>
+
+  {/* ตัวคั่น "หรือ" */}
+  <div className="or-sep"><span>หรือ</span></div>
+
+  {/* ปุ่มดำ */}
+  <button
+    className="btn btn-secondary print-quotation-btn"
+    onClick={printQuotation}
+  >
+    ดาวน์โหลดใบเสนอราคา
+  </button>
+</div>
+
+      </aside>
+    </div>
+  </div>
 
       {paymentModalOpen && (
         <div className="payment-modal">

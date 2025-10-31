@@ -1,186 +1,114 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './Contact.css';
 
-const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: ''
+export default function Contact() {
+  const phones = ["096-399-1916", "096-389-1916", "02-123-4567", "02-987-6543"];
+  const [form, setForm] = useState({
+    name: '', email: '', phone: '', subject: '', message: ''
   });
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    // ส่งข้อมูลไปยัง API
-    console.log('ส่งข้อความ:', formData);
-    alert('ส่งข้อความเรียบร้อยแล้ว! เราจะติดต่อกลับโดยเร็วที่สุด');
-    setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+    try {
+      const res = await axios.post('http://localhost:5050/api/contact', form);
+      if (res.data?.success) {
+        alert('ส่งข้อความเรียบร้อยแล้ว');
+        setForm({ name: '', email: '', phone: '', subject: '', message: '' });
+      } else {
+        alert('ส่งไม่สำเร็จ กรุณาลองใหม่');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('ส่งไม่สำเร็จ กรุณาลองใหม่');
+    }
   };
 
   return (
     <div className="contact-page">
-      <div className="container">
-        <h1>ติดต่อเรา</h1>
-        
-        <div className="contact-content">
-          {/* ข้อมูลติดต่อ */}
-          <div className="contact-info">
-            <h2>📞 ข้อมูลติดต่อ</h2>
-            
-            <div className="contact-grid">
-              <div className="contact-item">
-                <div className="contact-icon">
-                  <i className="fas fa-map-marker-alt"></i>
-                </div>
-                <div className="contact-details">
-                  <h3>📍 ที่อยู่</h3>
-                  <p>123 ถนนสุขุมวิท</p>
-                  <p>แขวงคลองเตย เขตคลองเตย</p>
-                  <p>กรุงเทพฯ 10110</p>
-                </div>
-              </div>
+      <div className="container contact-wrap">
+        {/* LEFT */}
+        <section className="col-left">
+          <h2 className="sec-title">ข้อมูลติดต่อเรา</h2>
 
-              <div className="contact-item">
-                <div className="contact-icon">
-                  <i className="fas fa-phone"></i>
-                </div>
-                <div className="contact-details">
-                  <h3>📱 เบอร์โทรศัพท์</h3>
-                  <p><a href="tel:0963991916">096-399-1916</a></p>
-                  <p><a href="tel:0963891916">096-389-1916</a></p>
-                </div>
-              </div>
-
-              <div className="contact-item">
-                <div className="contact-icon">
-                  <i className="fas fa-envelope"></i>
-                </div>
-                <div className="contact-details">
-                  <h3>✉️ อีเมล์</h3>
-                  <p><a href="mailto:info@kaokaioffice.com">info@kaokaioffice.com</a></p>
-                </div>
-              </div>
-
-              <div className="contact-item">
-                <div className="contact-icon">
-                  <i className="fas fa-clock"></i>
-                </div>
-                <div className="contact-details">
-                  <h3>🕒 เวลาทำการ</h3>
-                  <p><strong>จันทร์ - ศุกร์:</strong> 8:00 - 18:00</p>
-                  <p><strong>เสาร์:</strong> 9:00 - 16:00</p>
-                  <p><strong>อาทิตย์:</strong> ปิดทำการ</p>
-                </div>
-              </div>
-            </div>
+          <div className="company-text">
+            <p><strong>บริษัท ก้าวไกลเฟอร์นิเจอร์ จำกัด</strong></p>
+            <p>ข้อมูลแนะนำบริษัท</p>
+            <p>บรรทัด 1</p>
+            <p>บรรทัด 2</p>
+            <p>บรรทัด 3</p>
           </div>
-          
-          {/* ฟอร์มติดต่อ */}
-          <div className="contact-form">
-            <h2>💬 ส่งข้อความถึงเรา</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="name">ชื่อ *</label>
-                  <input 
-                    type="text" 
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    placeholder="กรอกชื่อของคุณ" 
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="email">อีเมล์ *</label>
-                  <input 
-                    type="email" 
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="กรอกอีเมล์ของคุณ" 
-                    required
-                  />
-                </div>
-              </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="phone">เบอร์โทรศัพท์</label>
-                  <input 
-                    type="tel" 
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    placeholder="กรอกเบอร์โทรศัพท์" 
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="subject">หัวข้อ *</label>
-                  <input 
-                    type="text" 
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleInputChange}
-                    placeholder="หัวข้อข้อความ" 
-                    required
-                  />
-                </div>
-              </div>
+          <h3 className="contactinfo-title">Contact info</h3>
+          <ul className="phone-list" aria-label="เบอร์โทรติดต่อ">
+  {phones.map((p) => (
+    <li key={p}>
+      {/* ใช้ไอคอนโทรศัพท์ (เปลี่ยนเป็น Font Awesome ได้) */}
+      <span className="phone-icon" aria-hidden="true">☎</span>
+      <a href={`tel:${p.replace(/[^0-9+]/g, '')}`}>{p}</a>
+    </li>
+  ))}
+</ul>
+        </section>
 
-              <div className="form-group">
-                <label htmlFor="message">ข้อความ *</label>
-                <textarea 
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleInputChange}
-                  rows="5" 
-                  placeholder="กรอกข้อความของคุณ..."
-                  required
-                ></textarea>
-              </div>
+        {/* RIGHT */}
+        <section className="col-right">
+          <h2 className="sec-title">ส่งข้อความถึงเรา</h2>
 
-              <button type="submit" className="btn btn-primary">
-                <i className="fas fa-paper-plane"></i>
-                ส่งข้อความ
-              </button>
-            </form>
-          </div>
-        </div>
+          <form className="contact-form" onSubmit={onSubmit}>
+            {/* ใช้ label ซ่อน เพื่อให้เหมือนภาพ (placeholder เท่านั้น) */}
+            <label className="vh" htmlFor="name">ชื่อ - นามสกุล *</label>
+            <input
+              id="name" name="name" type="text"
+              placeholder="ชื่อ - นามสกุล *"
+              value={form.name} onChange={onChange} required
+            />
 
-        {/* ข้อมูลเพิ่มเติม */}
-        <div className="contact-extra">
-          <div className="extra-section">
-            <h3>🚚 บริการจัดส่ง</h3>
-            <p>เราจัดส่งทั่วประเทศ ปลอดภัย ตรงเวลา พร้อมบริการติดตั้ง</p>
-          </div>
-          
-          <div className="extra-section">
-            <h3>🛠️ บริการหลังการขาย</h3>
-            <p>รับประกัน 1 ปี และบริการซ่อมบำรุงตลอดอายุการใช้งาน</p>
-          </div>
-          
-          <div className="extra-section">
-            <h3>💳 วิธีการชำระเงิน</h3>
-            <p>รับชำระเงินผ่านโอนเงิน เงินสด หรือผ่อนชำระ 0%</p>
-          </div>
-        </div>
+            <label className="vh" htmlFor="email">อีเมล์ *</label>
+            <input
+              id="email" name="email" type="email"
+              placeholder="อีเมล์ *"
+              value={form.email} onChange={onChange} required
+            />
+
+            <label className="vh" htmlFor="phone">เบอร์โทร *</label>
+            <input
+              id="phone" name="phone" type="tel"
+              placeholder="เบอร์โทร *"
+              value={form.phone} onChange={onChange}
+            />
+
+            <label className="vh" htmlFor="subject">หัวข้อ *</label>
+            <input
+              id="subject" name="subject" type="text"
+              placeholder="หัวข้อ *"
+              value={form.subject} onChange={onChange} required
+            />
+
+            <label className="vh" htmlFor="message">พิมพ์ข้อความของคุณ ที่นี่ *</label>
+            <textarea
+              id="message" name="message" rows="5"
+              placeholder="พิมพ์ข้อความของคุณ ที่นี่ *"
+              value={form.message} onChange={onChange} required
+            />
+
+            <button type="submit" className="btn-send">ส่งข้อความ</button>
+          </form>
+        </section>
       </div>
+
+      {/* COMPANY PHOTO BAR */}
+<div
+  className="company-photo"
+  role="img"
+  aria-label="รูปบริษัท (หน้าร้าน)"
+  style={{
+    backgroundImage: `url(${process.env.PUBLIC_URL}/images/BG001.jpg)`
+  }}
+/>
+
     </div>
   );
-};
-
-export default Contact; 
+}

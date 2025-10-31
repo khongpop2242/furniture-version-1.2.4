@@ -326,6 +326,437 @@
   margin: 0;
 }
 
+/* ===== Tab Navigation ===== */
+.admin-tabs {
+  display: flex;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #e9ecef;
+  background: white;
+  border-radius: 15px 15px 0 0;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #6c757d;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.tab-button:hover {
+  color: #dc3545;
+  background-color: #f8f9fa;
+}
+
+.tab-button.active {
+  color: #dc3545;
+  border-bottom-color: #dc3545;
+  background-color: #f8f9fa;
+}
+
+.tab-button i {
+  font-size: 1.1rem;
+}
+
+/* ===== Section Headers ===== */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.section-header h2 {
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ===== Products Management ===== */
+.products-table-container,
+.orders-table-container {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.products-table,
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.products-table th,
+.orders-table th {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.products-table td,
+.orders-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: middle;
+}
+
+.products-table tbody tr:hover,
+.orders-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.product-thumbnail {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+}
+
+/* ===== Stock Controls ===== */
+.stock-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.stock-amount {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #333;
+  padding: 0.25rem 0.5rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.stock-buttons {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.btn-success {
+  background: #28a745;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #218838;
+  transform: translateY(-2px);
+}
+
+.btn-warning {
+  background: #ffc107;
+  color: #212529;
+}
+
+.btn-warning:hover {
+  background: #e0a800;
+  transform: translateY(-2px);
+}
+
+.btn-info {
+  background: #17a2b8;
+  color: white;
+}
+
+.btn-info:hover {
+  background: #138496;
+  transform: translateY(-2px);
+}
+
+.btn-danger {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+}
+
+/* ===== Customer Info ===== */
+.customer-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.customer-info .email {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+/* ===== Status Select ===== */
+.status-select {
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+  min-width: 120px;
+}
+
+.status-select:focus {
+  outline: none;
+  border-color: #dc3545;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.1);
+}
+
+/* ===== Modal Styles ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.order-details-modal {
+  max-width: 800px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+  border-radius: 15px 15px 0 0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: white;
+  padding: 0.25rem;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ===== Product Form ===== */
+.product-form {
+  padding: 1.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 0.75rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.form-checkboxes {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-checkboxes label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+.form-checkboxes input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+/* ===== Order Details ===== */
+.order-details-content {
+  padding: 1.5rem;
+}
+
+.order-info,
+.order-items,
+.order-summary {
+  margin-bottom: 1.5rem;
+}
+
+.order-info h4,
+.order-items h4,
+.order-summary h4 {
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.order-info p {
+  margin-bottom: 0.5rem;
+  color: #666;
+}
+
+.order-items-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.order-items-table th {
+  background: #f8f9fa;
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.order-items-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.order-item-thumbnail {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.pending {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.status-badge.confirmed {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-badge.shipped {
+  background: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+.status-badge.delivered {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-badge.cancelled {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.modal-actions {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: flex-end;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .dashboard-controls {
@@ -345,11 +776,15 @@
     grid-template-columns: 1fr;
   }
   
-  .users-table-container {
+  .users-table-container,
+  .products-table-container,
+  .orders-table-container {
     overflow-x: auto;
   }
   
-  .users-table {
+  .users-table,
+  .products-table,
+  .orders-table {
     min-width: 1000px;
   }
   
@@ -365,4 +800,288 @@
   .role-select {
     min-width: 100px;
   }
+  
+  .admin-tabs {
+    flex-direction: column;
+  }
+  
+  .tab-button {
+    border-bottom: none;
+    border-right: 3px solid transparent;
+  }
+  
+  .tab-button.active {
+    border-bottom: none;
+    border-right-color: #dc3545;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .stock-controls {
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .stock-buttons {
+    flex-direction: column;
+  }
+  
+  .modal-content {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
 }
+
+/* --- Compact table & fixed widths so buttons don't overflow --- */
+.products-table {
+  table-layout: fixed;              /* คุมความกว้างคอลัมน์ให้เสถียร */
+}
+.products-table th:nth-child(1),
+.products-table td:nth-child(1) { width: 76px; }     /* รูปภาพ */
+.products-table th:nth-child(2),
+.products-table td:nth-child(2) { width: 220px; }    /* ชื่อสินค้า */
+.products-table th:nth-child(3),
+.products-table td:nth-child(3) { width: 90px; }     /* รุ่น */
+.products-table th:nth-child(4),
+.products-table td:nth-child(4) { width: 110px; }    /* ราคา */
+.products-table th:nth-child(5),
+.products-table td:nth-child(5) { width: 140px; }    /* หมวดหมู่ */
+
+/* คอลัมน์สต็อกให้พอดีในกรอบเดิม */
+.products-table th:nth-child(6),
+.products-table td:nth-child(6) { width: 260px; }    /* สต็อก */
+.products-table th:nth-child(7),
+.products-table td:nth-child(7) { width: 120px; }    /* การจัดการ */
+
+/* --- Compact stock cell --- */
+.stock-controls {
+  display: grid;
+  grid-template-rows: auto auto;
+  justify-items: center;
+  row-gap: 8px;                     /* เว้นระยะเล็กน้อย */
+  padding: 4px 0;
+}
+
+.stock-amount {
+  font-size: 0.95rem;               /* ย่อเลขลงเล็กน้อย */
+  line-height: 1.2;
+  padding: 2px 10px;
+  background: #f1f3f5;
+  border-radius: 10px;
+  min-width: 44px;
+  text-align: center;
+}
+
+/* ปุ่ม 3 อันให้พอดีไม่ล้น */
+.stock-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;                          /* ระยะห่างระหว่างปุ่ม */
+  width: 100%;
+  max-width: 240px;                  /* บังคับไม่ให้กว้างเกินช่อง */
+}
+
+.stock-buttons .btn {
+  padding: 8px 0;                    /* ลดความสูง */
+  border-radius: 10px;
+  min-width: 0;                      /* ป้องกันเบี้ยวจาก min-content */
+}
+
+/* ย่อปุ่มเวอร์ชันเล็กลงอีกหน่อย */
+.btn.btn-sm {
+  padding: 5px 8px;
+  font-size: 0.8rem;
+}
+
+/* ปรับรูปให้เล็กลงนิดเพื่อชดเชยพื้นที่รวม */
+.product-thumbnail {
+  width: 44px;
+  height: 44px;
+}
+
+/* --- ย่อเพิ่มอัตโนมัติเมื่อจอแคบลง แต่ยังอยู่ในกรอบเดิม --- */
+@media (max-width: 1280px) {
+  .products-table th:nth-child(6),
+  .products-table td:nth-child(6) { width: 220px; }
+
+  .stock-buttons {
+    gap: 6px;
+    max-width: 210px;
+  }
+
+  .stock-buttons .btn { padding: 7px 0; }
+  .stock-amount { font-size: 0.9rem; padding: 2px 8px; }
+}
+
+@media (max-width: 1100px) {
+  .products-table th:nth-child(6),
+  .products-table td:nth-child(6) { width: 200px; }
+
+  .stock-buttons { max-width: 190px; gap: 6px; }
+}
+
+/* กันล้นแนวนอน (สำรอง) */
+.products-table-container { overflow-x: auto; }
+
+/* ---------------- USERS TABLE: compact & fixed widths ---------------- */
+.users-table { table-layout: fixed; }  /* คุมความกว้างให้เสถียร */
+
+/* ลำดับ | ชื่อ | อีเมล | สิทธิ์ | เบอร์โทร | ที่อยู่ | วันที่สมัคร | การจัดการ */
+.users-table th:nth-child(1), .users-table td:nth-child(1) { width: 56px; }
+.users-table th:nth-child(2), .users-table td:nth-child(2) { width: 240px; }
+.users-table th:nth-child(3), .users-table td:nth-child(3) { width: 260px; }
+.users-table th:nth-child(4), .users-table td:nth-child(4) { width: 150px; }
+.users-table th:nth-child(5), .users-table td:nth-child(5) { width: 130px; }
+.users-table th:nth-child(6), .users-table td:nth-child(6) { width: 220px; } /* address */
+.users-table th:nth-child(7), .users-table td:nth-child(7) { width: 170px; }
+.users-table th:nth-child(8), .users-table td:nth-child(8) { width: 160px; } /* actions */
+
+.user-info span { display:block; line-height:1.15; }
+
+/* address แสดงบรรทัดเดียวกัน—กันล้น */
+.address-cell{
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ปรับขนาดป้าย role ให้ไม่สูงเกิน */
+.role { padding: 4px 10px; font-size: 0.8rem; border-radius: 999px; }
+
+/* แถวการจัดการ: ป้องกันล้นและกดชิด */
+.action-buttons{ gap:6px; flex-wrap:nowrap; justify-content:flex-start; }
+.role-select{
+  min-width:120px;
+  height:34px;
+  padding:6px 8px;
+  font-size:0.85rem;
+}
+.btn.btn-sm{ padding:6px 8px; font-size:0.82rem; }
+
+/* ---------------- ORDERS TABLE: compact & fixed widths --------------- */
+.orders-table { table-layout: fixed; }
+
+/* หมายเลขคำสั่งซื้อ | ลูกค้า | ยอดรวม | สถานะ | วันที่สั่งซื้อ | การจัดการ */
+.orders-table th:nth-child(1), .orders-table td:nth-child(1) { width: 310px; }
+.orders-table th:nth-child(2), .orders-table td:nth-child(2) { width: 280px; }
+.orders-table th:nth-child(3), .orders-table td:nth-child(3) { width: 130px; text-align:left; }
+.orders-table th:nth-child(4), .orders-table td:nth-child(4) { width: 170px; }
+.orders-table th:nth-child(5), .orders-table td:nth-child(5) { width: 220px; }
+.orders-table th:nth-child(6), .orders-table td:nth-child(6) { width: 120px; }
+
+.status-select{
+  height:34px;
+  padding:6px 8px;
+  font-size:0.9rem;
+  min-width: 150px;
+}
+
+.orders-table .btn.btn-sm{
+  padding:8px 10px;
+  width:100%;
+  max-width:120px;   /* ไม่ให้กินพื้นที่เกินช่อง */
+}
+
+/* การ์ดลูกค้าในคอลัมน์ “ลูกค้า” ให้กระชับขึ้นเล็กน้อย */
+.customer-info{
+  gap:4px;
+}
+.orders-table .customer-info{
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* ---------------- Responsive tweaks ---------------- */
+@media (max-width: 1280px){
+  /* ย่อคอลัมน์ที่กว้างลงเล็กน้อย */
+  .users-table th:nth-child(2), .users-table td:nth-child(2) { width: 220px; }
+  .users-table th:nth-child(3), .users-table td:nth-child(3) { width: 240px; }
+  .users-table th:nth-child(6), .users-table td:nth-child(6) { width: 200px; }
+  .users-table th:nth-child(8), .users-table td:nth-child(8) { width: 150px; }
+
+  .orders-table th:nth-child(1), .orders-table td:nth-child(1) { width: 280px; }
+  .orders-table th:nth-child(2), .orders-table td:nth-child(2) { width: 260px; }
+  .orders-table th:nth-child(4), .orders-table td:nth-child(4) { width: 160px; }
+
+  .status-select{ min-width: 140px; }
+}
+
+@media (max-width: 1100px){
+  /* บีบเพิ่ม และเปิดสกอลล์แนวนอนเป็น last resort */
+  .users-table-container,
+  .orders-table-container { overflow-x: auto; }
+
+  .users-table, .orders-table { min-width: 1100px; } /* กันแตกแถว */
+}
+
+/* ====== GLOBAL COMPACT ====== */
+.users-table th, .users-table td,
+.orders-table th, .orders-table td {
+  padding: 10px 8px;            /* ลด padding */
+  font-size: 0.92rem;           /* ย่อตัวอักษรลงเล็กน้อย */
+}
+.action-buttons { gap: 6px; }
+.btn.btn-sm { padding: 5px 6px; width: 34px; height: 34px; } /* ปุ่มไอคอนให้เล็กลง */
+
+/* ====== USERS TABLE (รวมความกว้าง ~1100px) ====== */
+.users-table { table-layout: fixed; }
+
+.users-table th:nth-child(1), .users-table td:nth-child(1) { width: 40px; }   /* ลำดับ */
+.users-table th:nth-child(2), .users-table td:nth-child(2) { width: 190px; }  /* ชื่อ */
+.users-table th:nth-child(3), .users-table td:nth-child(3) { width: 210px; }  /* อีเมล */
+.users-table th:nth-child(4), .users-table td:nth-child(4) { width: 120px; }  /* สิทธิ์ */
+.users-table th:nth-child(5), .users-table td:nth-child(5) { width: 110px; }  /* เบอร์ */
+.users-table th:nth-child(6), .users-table td:nth-child(6) { width: 160px; }  /* ที่อยู่ */
+.users-table th:nth-child(7), .users-table td:nth-child(7) { width: 160px; }  /* วันที่สมัคร */
+.users-table th:nth-child(8), .users-table td:nth-child(8) { width: 110px; }  /* การจัดการ */
+
+.user-avatar { width: 28px; height: 28px; font-size: 0.8rem; }
+.user-info span { display:block; line-height:1.2; }
+
+/* ที่อยู่ – ตัดคำเป็น […] เพื่อไม่กินพื้นที่ */
+.address-cell {
+  max-width: 160px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ป้าย role และ select ให้เล็กลง */
+.role { padding: 3px 8px; font-size: 0.75rem; border-radius: 999px; }
+.role-select { min-width: 108px; height: 30px; padding: 4px 8px; font-size: 0.8rem; }
+
+/* ====== ORDERS TABLE (รวมความกว้าง ~1050px) ====== */
+.orders-table { table-layout: fixed; }
+
+.orders-table th:nth-child(1), .orders-table td:nth-child(1) { width: 220px; } /* เลขออเดอร์ */
+.orders-table th:nth-child(2), .orders-table td:nth-child(2) { width: 230px; } /* ลูกค้า */
+.orders-table th:nth-child(3), .orders-table td:nth-child(3) { width: 110px; } /* ยอดรวม */
+.orders-table th:nth-child(4), .orders-table td:nth-child(4) { width: 150px; } /* สถานะ */
+.orders-table th:nth-child(5), .orders-table td:nth-child(5) { width: 220px; } /* วันที่สั่งซื้อ */
+.orders-table th:nth-child(6), .orders-table td:nth-child(6) { width: 120px; } /* การจัดการ */
+
+/* การ์ดลูกค้าให้กะทัดรัด (ตัดสไตล์การ์ด) */
+.orders-table .customer-info {
+  background: none; box-shadow: none; padding: 0;
+  gap: 2px; line-height: 1.2;
+}
+.orders-table .customer-info .email { font-size: 0.85rem; }
+
+/* select สถานะให้พอดีช่อง */
+.status-select { height: 30px; padding: 4px 8px; font-size: 0.85rem; min-width: 140px; }
+
+/* ====== Fallback สำหรับจอเล็กมาก (<1024) — ย่อเพิ่มให้ยังมองครบ ====== */
+@media (max-width: 1024px){
+  .users-table th, .users-table td,
+  .orders-table th, .orders-table td { padding: 8px 6px; font-size: 0.88rem; }
+  .role-select, .status-select { height: 28px; font-size: 0.8rem; min-width: 128px; }
+  .btn.btn-sm { width: 30px; height: 30px; padding: 4px; }
+  .users-table th:nth-child(2), .users-table td:nth-child(2) { width: 175px; }
+  .users-table th:nth-child(3), .users-table td:nth-child(3) { width: 195px; }
+  .orders-table th:nth-child(1), .orders-table td:nth-child(1) { width: 200px; }
+  .orders-table th:nth-child(2), .orders-table td:nth-child(2) { width: 210px; }
+}
+

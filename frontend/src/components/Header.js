@@ -10,6 +10,47 @@ const Header = () => {
   const [userRole, setUserRole] = useState('');
   const debounceRef = useRef(null);
   const navigate = useNavigate();
+  const [navOpen, setNavOpen] = useState(false);        // ← เพิ่ม
+  const closeNav = () => setNavOpen(false);
+
+  // ฟังก์ชันสำหรับอัพเดทจำนวนสินค้าในตะกร้า
+  const updateCartCount = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setCartCount(0);
+      return;
+    }
+
+    fetch('http://localhost:5050/api/cart', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        const count = Array.isArray(data) ? data.reduce((sum, item) => sum + (item.quantity || 0), 0) : 0;
+        setCartCount(count);
+        console.log('Cart count updated:', count);
+      })
+      .catch(e => {
+        console.error('Error fetching cart count:', e);
+        setCartCount(0);
+      });
+  };
+
+  // ฟังก์ชันสำหรับส่ง event เมื่อมีการเปลี่ยนแปลงตะกร้า
+  useEffect(() => {
+    const handleCartUpdate = () => {
+      updateCartCount();
+    };
+
+    // ฟัง event เมื่อมีการเปลี่ยนแปลงตะกร้า
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    window.addEventListener('storage', handleCartUpdate);
+
+    return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+      window.removeEventListener('storage', handleCartUpdate);
+    };
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -29,7 +70,7 @@ const Header = () => {
     }
     debounceRef.current = setTimeout(async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/search?q=${encodeURIComponent(searchQuery)}`);
+        const res = await fetch(`http://localhost:5050/api/search?q=${encodeURIComponent(searchQuery)}`);
         const data = await res.json();
         setSuggestions(Array.isArray(data) ? data : []);
         setShowSuggest(true);
@@ -47,23 +88,20 @@ const Header = () => {
     navigate(`/products?search=${encodeURIComponent(name)}`);
   };
 
-  // Cart count badge
+  // Cart count badge - อัพเดททุก 5 วินาที
   useEffect(() => {
     let intervalId;
-    const fetchCartCount = async () => {
-      try {
-        const res = await fetch('http://localhost:5000/api/cart');
-        const data = await res.json();
-        const count = Array.isArray(data) ? data.reduce((sum, item) => sum + (item.quantity || 0), 0) : 0;
-        setCartCount(count);
-      } catch (e) {
-        setCartCount(0);
-      }
-    };
-    fetchCartCount();
-    intervalId = setInterval(fetchCartCount, 5000);
-    const onFocus = () => fetchCartCount();
+
+    // อัพเดทครั้งแรก
+    updateCartCount();
+
+    // อัพเดททุก 5 วินาที
+    intervalId = setInterval(updateCartCount, 5000);
+
+    // อัพเดทเมื่อ focus หน้าต่าง
+    const onFocus = () => updateCartCount();
     window.addEventListener('focus', onFocus);
+
     return () => {
       intervalId && clearInterval(intervalId);
       window.removeEventListener('focus', onFocus);
@@ -75,9 +113,9 @@ const Header = () => {
     const checkUserRole = async () => {
       const token = localStorage.getItem('token');
       if (!token) return;
-      
+
       try {
-        const response = await fetch('http://localhost:5000/api/auth/me', {
+        const response = await fetch('http://localhost:5050/api/auth/me', {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.ok) {
@@ -88,7 +126,7 @@ const Header = () => {
         console.error('Error checking user role:', error);
       }
     };
-    
+
     checkUserRole();
   }, []);
 
@@ -97,16 +135,20 @@ const Header = () => {
       <div className="header-top">
         <div className="container">
           <div className="header-top-content">
-            <div className="logo">
-              <div className="logo-icon">K</div>
-              <span className="logo-text">KaokaiOfficeFurniture</span>
-            </div>
-            
+            <Link to="/" className="logo">
+              <img
+                src="/images/logo-kaokai-wh.png"
+                alt="Kaokai Office Furniture"
+                className="logo-img"
+              />
+            </Link>
+
+
             <div className="search-bar" onBlur={() => setTimeout(() => setShowSuggest(false), 150)}>
               <form onSubmit={handleSearch} autoComplete="off">
                 <input
                   type="text"
-                  placeholder="Searching for..."
+                  placeholder="ค้นหา ..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => suggestions.length && setShowSuggest(true)}
@@ -128,40 +170,62 @@ const Header = () => {
             </div>
 
             <div className="contact-info">
-              <a href="tel:0963991916" className="phone-btn phone-green">0963991916</a>
-              <a href="tel:0963891916" className="phone-btn phone-red">0963891916</a>
-              <Link to="/contact" className="btn btn-secondary">CONTACT</Link>
+              {/* LINE pill (ใช้รูปจาก public) */}
+              <a href="tel:0963891916" className="pill pill-green" aria-label="LINE โทร 0963891916">
+                <img src="/LINE_logo.svg.png" alt="LINE" className="pill-logo" />
+                <span>0963891916</span>
+              </a>
+
+              {/* Phone pill */}
+              <a href="tel:0963891916" className="pill pill-red" aria-label="โทรศัพท์ 0963891916">
+                <i className="fas fa-phone pill-ic" aria-hidden="true" />
+                <span>0963891916</span>
+              </a>
+
+              <Link to="/contact" className="pill pill-gray">CONTACT</Link>
             </div>
 
+            {/* ไอคอน + Hamburger */}
             <div className="header-actions">
-              <Link to="/cart" className="cart-icon">
+              <Link to="/cart" className="cart-icon" onClick={closeNav}>
                 <i className="fas fa-shopping-cart"></i>
                 {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
               </Link>
               {userRole === 'ADMIN' && (
-                <Link to="/admin" className="admin-icon" title="แดชบอร์ดผู้ดูแลระบบ">
+                <Link to="/admin" className="admin-icon" title="แดชบอร์ดผู้ดูแลระบบ" onClick={closeNav}>
                   <i className="fas fa-user-shield"></i>
                 </Link>
               )}
               {localStorage.getItem('token') ? (
-                <Link to="/profile" className="profile-icon">
+                <Link to="/profile" className="profile-icon" onClick={closeNav}>
                   <i className="fas fa-user"></i>
                 </Link>
               ) : (
                 <div className="auth-links">
-                  <Link to="/login" className="login-link">
+                  <Link to="/login" className="login-link" onClick={closeNav}>
                     <i className="fas fa-user"></i>
                   </Link>
                 </div>
               )}
+
+              {/* Hamburger: โผล่เฉพาะจอเล็ก */}
+              <button
+                className={`hamburger ${navOpen ? 'is-active' : ''}`}
+                aria-label="เปิด/ปิดเมนู"
+                aria-expanded={navOpen}
+                onClick={() => setNavOpen(v => !v)}
+              >
+                <span className="hamburger-box"><span className="hamburger-inner" /></span>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <nav className="navigation">
+      {/* เมนูหลัก: เปิด/ปิดด้วย navOpen */}
+      <nav className={`navigation ${navOpen ? 'is-open' : ''}`}>
         <div className="container">
-          <ul className="nav-menu">
+          <ul className="nav-menu" onClick={closeNav}>
             <li><Link to="/">หน้าหลัก</Link></li>
             <li><Link to="/products">สินค้า</Link></li>
             <li><Link to="/promotions">โปรโมชั่น</Link></li>

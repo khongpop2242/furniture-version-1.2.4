@@ -14,6 +14,12 @@ model User {
   password          String
   phone             String?
   address           String?
+  district          String?
+  gender            String?
+  nickname          String?
+  amphoe            String?
+  province          String?
+  postalCode        String?
   avatar            String?
   role              UserRole @default(USER)
   resetPasswordToken String?
@@ -21,6 +27,8 @@ model User {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt @default(now())
   orders            Order[]
+  favorites         Favorite[]
+  cartItems         CartItem[]
 
   @@map("users")
 }
@@ -44,19 +52,23 @@ model Product {
   updatedAt     DateTime    @updatedAt
   cartItems     CartItem[]
   orderItems    OrderItem[]
+  favorites     Favorite[]
 
   @@map("products")
 }
 
 model CartItem {
   id        Int      @id @default(autoincrement())
+  userId    Int      @default(1)
   productId Int
   quantity  Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([productId], map: "cart_items_productId_fkey")
+  @@index([userId], map: "cart_items_userId_fkey")
   @@map("cart_items")
 }
 
@@ -66,6 +78,8 @@ model Order {
   total           Decimal     @db.Decimal(10, 2)
   status          OrderStatus @default(PENDING)
   shippingAddress String      @db.Text
+  deliveryMethod  String?     @db.Text
+  deliveryDetails String?     @db.Text
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
   orderItems      OrderItem[]
@@ -114,6 +128,20 @@ model Contact {
   createdAt DateTime @default(now())
 
   @@map("contacts")
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@index([userId], map: "favorites_userId_fkey")
+  @@index([productId], map: "favorites_productId_fkey")
+  @@map("favorites")
 }
 
 enum OrderStatus {
