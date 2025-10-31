@@ -1396,77 +1396,101 @@ const adminMiddleware = async (req: any, res: any, next: any) => {
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { name, email, password, phone } = req.body || {};
+    console.log('📝 Register request:', { name, email, phone: phone ? 'provided' : 'null' });
+    
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'กรอกข้อมูลให้ครบ' });
     }
 
+    console.log('🔍 Checking if user exists...');
     const existed = await prisma.user.findUnique({ where: { email } });
     if (existed) {
       return res.status(409).json({ message: 'อีเมลนี้มีผู้ใช้แล้ว' });
     }
 
+    console.log('🔐 Hashing password...');
     // เข้ารหัสรหัสผ่าน
     const hash = await bcrypt.hash(password, 10);
     
+    console.log('👤 Creating new user...');
     // สร้างผู้ใช้ใหม่ (ปรับ field ให้ตรง schema ของคุณ)
     const newUser = await prisma.user.create({
       data: {
         name,
         email,
         password: hash,
-        phone: phone ?? null,   // เอาออกได้ถ้า schema ไม่มีคอลัมน์นี้
-        // role: 'USER',        // ใส่ถ้า schema ไม่มี default
+        phone: phone ?? null,
       },
       select: { id: true, name: true, email: true }
     });
     
+    console.log('✅ User created:', newUser.id);
+    console.log('🎫 Generating token...');
     const token = signToken({ id: newUser.id, email: newUser.email });
     return res.json({ token, user: newUser });
 
-    } catch (e: any) {
+  } catch (e: any) {
     // Prisma duplicate unique
     if (e?.code === 'P2002' && e?.meta?.target?.includes('email')) {
       return res.status(409).json({ message: 'อีเมลนี้มีผู้ใช้แล้ว' });
     }
 
-    console.error('Register error:', e?.code, e?.message, e);
-    return res.status(500).json({ message: 'เกิดข้อผิดพลาดในการสมัครสมาชิก' });
+    console.error('❌ Register error:', {
+      code: e?.code,
+      message: e?.message,
+      name: e?.name,
+      meta: e?.meta,
+      stack: process.env.NODE_ENV === 'development' ? e?.stack : undefined
+    });
+    
+    return res.status(500).json({ 
+      message: 'เกิดข้อผิดพลาดในการสมัครสมาชิก',
+      error: process.env.NODE_ENV === 'development' ? e?.message : undefined
+    });
   }
 });
 
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body || {};
+    console.log('🔐 Login request for email:', email);
+    
     if (!email || !password) {
       return res.status(400).json({ message: 'กรอกอีเมลและรหัสผ่าน' });
     }
 
+    console.log('🔍 Finding user...');
     const user = await prisma.user.findUnique({
       where: { email }
     });
     
     if (!user) {
+      console.log('❌ User not found:', email);
       return res.status(401).json({ message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
     }
     
     if (!user.password) {
-      console.error('User found but password field is null/undefined for email:', email);
+      console.error('⚠️ User found but password field is null/undefined for email:', email);
       return res.status(401).json({ message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
     }
 
+    console.log('🔐 Comparing password...');
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) {
+      console.log('❌ Password mismatch for email:', email);
       return res.status(401).json({ message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
     }
 
+    console.log('✅ Login successful for user:', user.id);
+    console.log('🎫 Generating token...');
     const token = signToken({ id: user.id, email: user.email });
     res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
   } catch (e: any) {
-    console.error('Login error:', e);
-    console.error('Error details:', {
+    console.error('❌ Login error:', {
       message: e?.message,
       code: e?.code,
-      stack: e?.stack
+      name: e?.name,
+      stack: process.env.NODE_ENV === 'development' ? e?.stack : undefined
     });
     res.status(500).json({ 
       message: 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ',
