@@ -2054,12 +2054,29 @@ app.use('*', (req, res) => {
 app.listen(PORT, async () => {
   console.log(`🚀 Server is running on port ${PORT}`);
   
+  // Test database connection
+  try {
+    await prisma.$connect();
+    console.log('✅ Database connected successfully');
+  } catch (error) {
+    console.error('❌ Database connection failed:', error);
+    console.error('   Please check DATABASE_URL environment variable');
+  }
+  
   // ตรวจสอบการตั้งค่า email
   if (EMAIL_USER && EMAIL_PASS) {
     console.log('📧 Email service is configured');
   } else {
     console.log('⚠️  Email service is not configured');
     console.log('   Please set EMAIL_USER and EMAIL_PASS in your .env file');
+  }
+  
+  // ตรวจสอบ JWT_SECRET
+  const JWT_SECRET_CHECK = process.env.JWT_SECRET || 'dev-secret';
+  if (JWT_SECRET_CHECK === 'dev-secret') {
+    console.log('⚠️  Using default JWT_SECRET (not recommended for production)');
+  } else {
+    console.log('✅ JWT_SECRET is configured');
   }
   
   console.log(`📊 API Documentation:`);
