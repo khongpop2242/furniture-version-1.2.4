@@ -1447,6 +1447,12 @@ app.post('/api/auth/register', async (req, res) => {
     
     console.log('✅ User created:', newUser.id);
     console.log('🎫 Generating token...');
+    
+    // Check JWT_SECRET before signing
+    if (!JWT_SECRET || JWT_SECRET === 'dev-secret') {
+      console.warn('⚠️ Using default JWT_SECRET - not recommended for production');
+    }
+    
     const token = signToken({ id: newUser.id, email: newUser.email });
     return res.json({ token, user: newUser });
 
@@ -1518,27 +1524,39 @@ app.post('/api/auth/login', async (req, res) => {
 
     console.log('✅ Login successful for user:', user.id);
     console.log('🎫 Generating token...');
-    const token = signToken({ id: user.id, email: user.email });
-    res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
-  } catch (e: any) {
-    // Prisma connection errors
-    if (e?.code === 'P1001' || e?.code === 'P1002') {
-      console.error('❌ Database connection error:', e.message);
-      return res.status(503).json({ 
-        message: 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาลองใหม่อีกครั้ง'
-      });
+    
+    // Check JWT_SECRET before signing
+    if (!JWT_SECRET || JWT_SECRET === 'dev-secret') {
+      console.warn('⚠️ Using default JWT_SECRET - not recommended for production');
     }
-
+    
+    const token = signToken({ id: user.id, email: user.email });
+    return res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
+  } catch (e: any) {
     console.error('❌ Login error:', {
       message: e?.message,
       code: e?.code,
       name: e?.name,
+      meta: e?.meta,
       stack: process.env.NODE_ENV === 'development' ? e?.stack : undefined
     });
-    res.status(500).json({ 
-      message: 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ',
-      error: process.env.NODE_ENV === 'development' ? e?.message : undefined
-    });
+    
+    // Prisma connection errors
+    if (e?.code === 'P1001' || e?.code === 'P1002' || e?.code === 'P1000') {
+      console.error('❌ Database connection error:', e.message);
+      return res.status(503).json({ 
+        message: 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาลองใหม่อีกครั้ง',
+        error: process.env.NODE_ENV === 'development' ? e.message : undefined
+      });
+    }
+
+    // Ensure response is sent
+    if (!res.headersSent) {
+      return res.status(500).json({ 
+        message: 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ',
+        error: process.env.NODE_ENV === 'development' ? e?.message : undefined
+      });
+    }
   }
 });
 
@@ -2079,13 +2097,33 @@ app.get('/api/admin/orders/:id', authMiddleware, adminMiddleware, async (req: an
   }
 });
 
-// Error handling middleware
+// Global error handler for unhandled promise rejections
+process.on('unhandledRejection', (reason: any, promise) => {
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('❌ Uncaught Exception:', error);
+  process.exit(1);
+});
+
+// Error handling middleware - ต้องอยู่หลัง routes ทั้งหมด
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ 
-    message: 'เกิดข้อผิดพลาดในระบบ',
-    error: process.env.NODE_ENV === 'development' ? err.message : {}
+  console.error('❌ Global error handler:', {
+    message: err?.message,
+    stack: err?.stack,
+    code: err?.code,
+    path: req.path,
+    method: req.method
   });
+  
+  // ถ้ายังไม่ได้ส่ง response ไปแล้ว
+  if (!res.headersSent) {
+    res.status(500).json({ 
+      message: 'เกิดข้อผิดพลาดในระบบ',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+  }
 });
 
 // 404 handler
@@ -2097,13 +2135,27 @@ app.use('*', (req, res) => {
 app.listen(PORT, async () => {
   console.log(`🚀 Server is running on port ${PORT}`);
   
-  // Test database connection
-  try {
-    await prisma.$connect();
-    console.log('✅ Database connected successfully');
-  } catch (error) {
-    console.error('❌ Database connection failed:', error);
+  // Test database connection with retry
+  let dbConnected = false;
+  for (let i = 0; i < 3; i++) {
+    try {
+      await prisma.$connect();
+      console.log('✅ Database connected successfully');
+      dbConnected = true;
+      break;
+    } catch (error: any) {
+      console.error(`❌ Database connection attempt ${i + 1} failed:`, error.message);
+      if (i < 2) {
+        console.log('   Retrying in 2 seconds...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+    }
+  }
+  
+  if (!dbConnected) {
+    console.error('❌ Database connection failed after 3 attempts');
     console.error('   Please check DATABASE_URL environment variable');
+    console.error('   Server will continue but database operations may fail');
   }
   
   // ตรวจสอบการตั้งค่า email
