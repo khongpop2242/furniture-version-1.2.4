@@ -19,7 +19,17 @@ const PORT = Number(process.env.PORT) || 5050;
 const app = express();
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY || '';
 const stripe = new Stripe(stripeSecretKey, { apiVersion: '2024-06-20' as any });
-const prisma = new PrismaClient();
+
+// Initialize Prisma with error handling
+let prisma: PrismaClient;
+try {
+  prisma = new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  });
+} catch (error) {
+  console.error('❌ Failed to initialize Prisma Client:', error);
+  throw error;
+}
 
 // Email configuration using environment variables
 const EMAIL_USER = process.env.EMAIL_USER;
@@ -1402,6 +1412,17 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(400).json({ message: 'กรอกข้อมูลให้ครบ' });
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'รูปแบบอีเมลไม่ถูกต้อง' });
+    }
+
+    // Validate password length
+    if (password.length < 8) {
+      return res.status(400).json({ message: 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร' });
+    }
+
     console.log('🔍 Checking if user exists...');
     const existed = await prisma.user.findUnique({ where: { email } });
     if (existed) {
@@ -1413,13 +1434,13 @@ app.post('/api/auth/register', async (req, res) => {
     const hash = await bcrypt.hash(password, 10);
     
     console.log('👤 Creating new user...');
-    // สร้างผู้ใช้ใหม่ (ปรับ field ให้ตรง schema ของคุณ)
+    // สร้างผู้ใช้ใหม่
     const newUser = await prisma.user.create({
       data: {
         name,
         email,
         password: hash,
-        phone: phone ?? null,
+        phone: phone || null,
       },
       select: { id: true, name: true, email: true }
     });
@@ -1433,6 +1454,14 @@ app.post('/api/auth/register', async (req, res) => {
     // Prisma duplicate unique
     if (e?.code === 'P2002' && e?.meta?.target?.includes('email')) {
       return res.status(409).json({ message: 'อีเมลนี้มีผู้ใช้แล้ว' });
+    }
+
+    // Prisma connection errors
+    if (e?.code === 'P1001' || e?.code === 'P1002') {
+      console.error('❌ Database connection error:', e.message);
+      return res.status(503).json({ 
+        message: 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาลองใหม่อีกครั้ง'
+      });
     }
 
     console.error('❌ Register error:', {
@@ -1457,6 +1486,12 @@ app.post('/api/auth/login', async (req, res) => {
     
     if (!email || !password) {
       return res.status(400).json({ message: 'กรอกอีเมลและรหัสผ่าน' });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'รูปแบบอีเมลไม่ถูกต้อง' });
     }
 
     console.log('🔍 Finding user...');
@@ -1486,6 +1521,14 @@ app.post('/api/auth/login', async (req, res) => {
     const token = signToken({ id: user.id, email: user.email });
     res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
   } catch (e: any) {
+    // Prisma connection errors
+    if (e?.code === 'P1001' || e?.code === 'P1002') {
+      console.error('❌ Database connection error:', e.message);
+      return res.status(503).json({ 
+        message: 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาลองใหม่อีกครั้ง'
+      });
+    }
+
     console.error('❌ Login error:', {
       message: e?.message,
       code: e?.code,
